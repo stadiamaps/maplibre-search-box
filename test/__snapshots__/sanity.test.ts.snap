@@ -1,0 +1,99 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`search-control > can be added to map 1`] = `
+<div
+  class="maplibregl-map"
+  id="map"
+>
+  <div
+    class="maplibregl-canvas-container maplibregl-interactive maplibregl-touch-drag-pan maplibregl-touch-zoom-rotate"
+  >
+    <canvas
+      aria-label="Map"
+      class="maplibregl-canvas"
+      height="316"
+      role="region"
+      style="width: 1200px; height: 158px;"
+      tabindex="0"
+      width="2400"
+    />
+  </div>
+  <div
+    class="maplibregl-control-container"
+  >
+    <div
+      class="maplibregl-ctrl-top-left "
+    />
+    <div
+      class="maplibregl-ctrl-top-right "
+    >
+      <div
+        class="maplibregl-ctrl stadiamaps-search-box"
+      >
+        <div
+          class="input-container"
+        >
+          <span
+            class="cancel hidden"
+          />
+          <span
+            class="spinner lds-dual-ring hidden"
+          />
+          <input
+            placeholder="Search for places and addresses..."
+            type="text"
+          />
+        </div>
+        <div
+          class="results hidden"
+        >
+          <div
+            class="results-list"
+          />
+          <div
+            class="search-attribution"
+          >
+            Powered by 
+            <a
+              href="https://stadiamaps.com/"
+              target="_blank"
+            >
+              Stadia Maps
+            </a>
+            <br />
+            Data © 
+            <a
+              href="https://www.openstreetmap.org/copyright"
+              rel="nofollow"
+              target="_blank"
+            >
+              OpenStreetMap
+            </a>
+             contributors & others
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="maplibregl-ctrl-bottom-left "
+    />
+    <div
+      class="maplibregl-ctrl-bottom-right "
+    >
+      <details
+        class="maplibregl-ctrl maplibregl-ctrl-attrib maplibregl-attrib-empty"
+        open=""
+      >
+        <summary
+          aria-label="Toggle attribution"
+          class="maplibregl-ctrl-attrib-button"
+          title="Toggle attribution"
+        />
+        <div
+          class="maplibregl-ctrl-attrib-inner"
+        />
+      </details>
+    </div>
+  </div>
+</div>
+`;

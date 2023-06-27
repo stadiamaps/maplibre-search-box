@@ -7,6 +7,8 @@
     "lib": ["ESNext", "DOM"],
     "moduleResolution": "Node",
     "strict": true,
+    "skipLibCheck": true,
+    "strictNullChecks": false,
     "sourceMap": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
@@ -15,8 +17,8 @@
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "forceConsistentCasingInFileNames": true,
-    "types": ["vite/client", "node"]
+    "types": ["vite/client", "node", "@wdio/globals/types"]
   },
   "include": ["src"],
-  "exclude": ["**/*.test.ts", "node_modules", "test/**", ".history/**"]
+  "exclude": ["**/*.test.ts", "node_modules/**", "test/**", ".history/**"]
 }

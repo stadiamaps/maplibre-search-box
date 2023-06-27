@@ -1,18 +1,17 @@
 {
-  "name": "vite-vanilla-ts-lib-starter",
-  "private": true,
-  "version": "0.0.2",
-  "main": "./dist/vite-ts-lib-starter.cjs",
-  "module": "./dist/vite-ts-lib-starter.mjs",
+  "name": "@stadiamaps/maplibre-search-box",
+  "version": "0.1.0",
+  "main": "./dist/maplibre-search-box.umd.js",
+  "module": "./dist/maplibre-search-box.mjs",
   "exports": {
     ".": {
-      "require": "./dist/vite-ts-lib-starter.cjs",
-      "import": "./dist/vite-ts-lib-starter.mjs"
+      "require": "./dist/maplibre-search-box.umd.js",
+      "import": "./dist/maplibre-search-box.mjs"
     }
   },
   "scripts": {
     "dev": "vite --host",
-    "build": "tsc && vite build && dts-bundle-generator --config ./dts-bundle-generator.config.ts",
+    "build": "vite build",
     "test": "vitest",
     "test:coverage": "vitest --coverage",
     "lint:scripts": "eslint . --ext .ts",
@@ -28,24 +27,36 @@
     "@types/node": "^18.11.18",
     "@typescript-eslint/eslint-plugin": "^5.48.2",
     "@typescript-eslint/parser": "^5.48.2",
-    "@vitest/coverage-c8": "^0.29.8",
-    "dts-bundle-generator": "^7.1.0",
+    "@vitest/browser": "^0.32.2",
+    "@vitest/coverage-c8": "^0.32.2",
+    "@wdio/types": "^8.10.4",
     "eslint": "^8.32.0",
     "eslint-config-prettier": "^8.6.0",
     "eslint-plugin-prettier": "^4.2.1",
     "husky": "^8.0.3",
+    "jsdom": "^22.1.0",
+    "jsdom-worker": "^0.3.0",
     "lint-staged": "^13.1.0",
     "postcss": "^8.4.21",
     "postcss-scss": "^4.0.6",
     "prettier": "^2.8.3",
+    "sass": "^1.63.3",
     "stylelint": "^14.16.1",
     "stylelint-config-prettier": "^9.0.5",
     "stylelint-config-recommended": "^9.0.0",
-    "stylelint-config-sass-guidelines": "^9.0.1",
+    "stylelint-config-sass-guidelines": "^9.0.0",
     "stylelint-prettier": "^3.0.0",
     "ts-node": "^10.9.1",
-    "typescript": "^4.9.4",
+    "typescript": "^5.1.3",
     "vite": "^4.0.4",
-    "vitest": "^0.29.8"
+    "vite-plugin-dts": "^2.3.0",
+    "vitest": "^0.32.2",
+    "webdriverio": "^8.11.2"
+  },
+  "peerDependencies": {
+    "maplibre-gl": ">=2.0.0"
+  },
+  "dependencies": {
+    "@stadiamaps/api": "^1.0.4"
   }
 }
