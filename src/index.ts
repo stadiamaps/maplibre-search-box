@@ -1,6 +1,6 @@
-import { IControl, Map } from "maplibre-gl";
+import type { IControl, Map } from "maplibre-gl";
 import {
-  AutocompleteRequest,
+  type AutocompleteRequest,
   GeocodingApi,
   PeliasGeoJSONFeature,
   PeliasLayer,
