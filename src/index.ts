@@ -6,10 +6,12 @@ import {
   PeliasLayer,
 } from "@stadiamaps/api";
 import "./index.scss";
+import logo from "./logo.svg";
 
 export class MapLibreSearchControlOptions {
   useMapFocusPoint = false;
   fixedFocusPoint: number[] = null;
+  maxResults = 5;
   minInputLength = 3;
   minWaitPeriodMs = 100;
   layers: PeliasLayer[] = null;
@@ -81,7 +83,7 @@ export class MapLibreSearchControl implements IControl {
       document.createElement("div")
     );
     attribution.className = "search-attribution";
-    attribution.innerHTML = `Powered by <a href="https://stadiamaps.com/" target="_blank">Stadia Maps</a><br>Data &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="nofollow">OpenStreetMap</a> contributors &amp; others`;
+    attribution.innerHTML = `<img height="50" width="50" src="${logo}" alt="Stadia Maps" class="logo"> Powered by <a href="https://stadiamaps.com/" target="_blank">Stadia Maps</a><br>&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="nofollow">OpenStreetMap</a> contributors &amp; <a href="https://stadiamaps.com/attribution/" target="_blank">others</a>`;
 
     return container;
   }
@@ -124,6 +126,7 @@ export class MapLibreSearchControl implements IControl {
         if (searchString !== this.lastRequestString) {
           const params: AutocompleteRequest = {
             text: searchString,
+            size: this.options.maxResults,
           };
 
           if (this.options.layers) {
@@ -155,8 +158,12 @@ export class MapLibreSearchControl implements IControl {
             if (this.lastRequestAt === requestAt) {
               this.clearResults();
               this.resultFeatures = results.features;
-              for (const result of this.resultFeatures) {
-                this.addResult(result);
+              if (this.resultFeatures.length > 0) {
+                for (const result of this.resultFeatures) {
+                  this.addResult(result);
+                }
+              } else {
+                this.onNoResults();
               }
             }
           } catch (e) {
@@ -173,6 +180,16 @@ export class MapLibreSearchControl implements IControl {
         }, this.options.minWaitPeriodMs);
       }
     }
+  }
+
+  onNoResults() {
+    this.showResults();
+
+    const el = document.createElement("div");
+    el.className = "result no-result";
+    el.textContent = "No Results Found";
+
+    this.resultsList.appendChild(el);
   }
 
   onClick(feature: PeliasGeoJSONFeature) {
@@ -289,9 +306,8 @@ export class MapLibreSearchControl implements IControl {
     this.resultsList.replaceChildren("");
   }
 
-  onRemove(_map: Map): void {
-    const x = this.map;
-    if (x?._container) {
+  onRemove(map: Map): void {
+    if (map._container) {
       this.container?.parentNode?.removeChild(this.container);
     }
     this.container = null;
