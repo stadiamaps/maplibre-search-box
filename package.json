@@ -1,8 +1,14 @@
 {
   "name": "@stadiamaps/maplibre-search-box",
-  "version": "0.1.0",
+  "version": "0.1.1",
+  "homepage": "https://docs.stadiamaps.com/",
+  "repository": "https://github.com/stadiamaps/maplibre-search-box",
   "main": "./dist/maplibre-search-box.umd.js",
   "module": "./dist/maplibre-search-box.mjs",
+  "files": [
+    "dist"
+  ],
+  "types": "dist/index.d.ts",
   "exports": {
     ".": {
       "require": "./dist/maplibre-search-box.umd.js",
