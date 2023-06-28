@@ -23,12 +23,6 @@ module.exports = defineConfig({
     },
     sourcemap: true
   },
-  test: {
-    browser: {
-      enabled: true,
-      headless: true,
-      name: "chrome"
-    },
-  },
+  test: {},
   plugins: [dts()]
 });

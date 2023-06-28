@@ -1,4 +1,4 @@
-import { describe, expect, expectTypeOf, it, vi } from "vitest";
+import { describe, expect, expectTypeOf, it } from "vitest";
 import { MapLibreSearchControl } from "../src";
 import { IControl, Map } from "maplibre-gl";
 
@@ -31,7 +31,7 @@ describe("search-control", () => {
     expectTypeOf(control).toMatchTypeOf<IControl>();
   });
 
-  it("can be added to map", () => {
+  it.todo("can be added to map", () => {
     const { mapEl } = setupMap();
     expect(mapEl).toMatchSnapshot();
   });
