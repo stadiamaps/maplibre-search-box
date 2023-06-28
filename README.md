@@ -8,7 +8,7 @@ Autocomplete APIs](https://docs.stadiamaps.com/geocoding-search-autocomplete/ove
 Based on the [Stadia Maps TS SDK](https://www.npmjs.com/package/@stadiamaps/api), it automatically handles best-practice
 functionality for search, including debouncing of requests, caching of previous results, and navigating to the chosen result.
 
-### Notice: Account Required 
+### Notice: Account Required
 
 Using this plugin requires creating an account and setting up authentication at [Stadia Maps](https://stadiamaps.com).
 You may use the free tier as long as your usage stays under the limit; additional usage and some advanced functionality
