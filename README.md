@@ -1,10 +1,10 @@
 # Stadia Maps MapLibre Search Box
 
-This [MapLibre GL JS](https://maplibre.org/projects/maplibre-gl-js/) plugin adds support for the Stadia Maps Search and
-Autocomplete APIs to any MapLibre GL JS map.
+This [MapLibre GL JS](https://maplibre.org/projects/maplibre-gl-js/) plugin adds support for the [Stadia Maps Search
+Autocomplete APIs](https://docs.stadiamaps.com/geocoding-search-autocomplete/overview/) to any MapLibre GL JS map.
 
-Based on the Stadia Maps TS SDK, it automatically handles best-practice functionality for search, including debouncing of
-requests, caching of previous results, and navigating to the chosen result.
+Based on the [Stadia Maps TS SDK](https://www.npmjs.com/package/@stadiamaps/api), it automatically handles best-practice
+functionality for search, including debouncing of requests, caching of previous results, and navigating to the chosen result.
 
 ## Getting Started
 
