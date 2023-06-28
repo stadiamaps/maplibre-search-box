@@ -9,7 +9,7 @@ module.exports = defineConfig({
     minify: "esbuild",
     lib: {
       entry: path.resolve(__dirname, "src/index.ts"),
-      name: "mapLibreSearchBox"
+      name: "maplibreSearchBox"
     },
     rollupOptions: {
       // make sure to externalize deps that shouldn't be bundled

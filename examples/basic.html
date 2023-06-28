@@ -3,32 +3,30 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Search Test</title>
+    <title>Basic MapLibre Search</title>
     <script src="https://unpkg.com/maplibre-gl@3.0.1/dist/maplibre-gl.js"></script>
     <link
       href="https://unpkg.com/maplibre-gl@3.0.1/dist/maplibre-gl.css"
       rel="stylesheet"
     />
-    <script src="./src/index.ts" type="module"></script>
-    <link href="./src/index.scss" rel="stylesheet" />
+    <script src="https://unpkg.com/@stadiamaps/maplibre-search-box/dist/maplibre-search-box.umd.js"></script>
+    <link
+      href="https://unpkg.com/@stadiamaps/maplibre-search-box/dist/style.css"
+      rel="stylesheet"
+    />
   </head>
   <body style="margin: 0; padding: 0">
     <div id="map" style="height: 100vh; width: 100vw"></div>
-    <script type="module">
-      import { MapLibreSearchControl } from "./src";
-
-      var control = new MapLibreSearchControl({
+    <script type="application/javascript">
+      var control = new maplibreSearchBox.MapLibreSearchControl({
         useMapFocusPoint: true,
       });
-      var navControl = new maplibregl.NavigationControl();
       var map = new maplibregl.Map({
         container: "map",
         style: "https://tiles.stadiamaps.com/styles/alidade_smooth.json", // stylesheet location
         center: [-74.5, 40], // starting position [lng, lat]
         zoom: 2, // starting zoom
-        hash: "map",
       });
-      map.addControl(navControl, "top-left");
       map.addControl(control, "top-left");
     </script>
   </body>
