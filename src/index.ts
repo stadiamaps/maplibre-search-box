@@ -10,7 +10,9 @@ import logo from "./logo.svg";
 
 export class MapLibreSearchControlOptions {
   useMapFocusPoint = false;
-  fixedFocusPoint: number[] = null;
+  mapFocusPointMinZoom = 5;
+  fixedFocusPoint: [number, number] = null;
+  searchOnEnter = false;
   maxResults = 5;
   minInputLength = 3;
   minWaitPeriodMs = 100;
@@ -66,9 +68,11 @@ export class MapLibreSearchControl implements IControl {
 
     this.input = inputContainer.appendChild(document.createElement("input"));
     this.input.type = "text";
-    this.input.placeholder = "Search for places and addresses...";
+    this.input.placeholder = "Search for places...";
     this.input.addEventListener("input", this.onInput.bind(this));
     this.input.addEventListener("focus", this.onFocus.bind(this));
+    this.input.addEventListener("keypress", this.onKey.bind(this));
+    this.input.enterKeyHint = "search";
 
     this.resultsContainer = container.appendChild(
       document.createElement("div")
@@ -106,7 +110,24 @@ export class MapLibreSearchControl implements IControl {
     this.clearButton.classList.toggle("hidden", !show);
   }
 
-  async onInput(e: Event) {
+  async onKey(e: KeyboardEvent) {
+    switch (e.key) {
+      case "Enter":
+        if (this.options.searchOnEnter) {
+          await this.onInput(e, true);
+        }
+        break;
+      case "Escape":
+        this.onClear();
+        break;
+      case "ArrowDown":
+      case "ArrowUp":
+        // TODO
+        break;
+    }
+  }
+
+  async onInput(e: Event, useSearch = false) {
     this.maybeShowClearButton();
 
     const searchString = this.input.value;
@@ -123,7 +144,7 @@ export class MapLibreSearchControl implements IControl {
       timeSinceLastRequest >= this.options.minWaitPeriodMs
     ) {
       if (searchString.length >= this.options.minInputLength) {
-        if (searchString !== this.lastRequestString) {
+        if (searchString !== this.lastRequestString || useSearch) {
           const params: AutocompleteRequest = {
             text: searchString,
             size: this.options.maxResults,
@@ -135,7 +156,9 @@ export class MapLibreSearchControl implements IControl {
 
           let focusPoint = this.options.fixedFocusPoint;
           if (this.options.useMapFocusPoint) {
-            focusPoint = this.map.getCenter().toArray();
+            if (this.map.getZoom() >= this.options.mapFocusPointMinZoom) {
+              focusPoint = this.map.getCenter().toArray();
+            }
           }
 
           if (focusPoint) {
@@ -152,7 +175,12 @@ export class MapLibreSearchControl implements IControl {
           this.lastRequestAt = requestAt;
           this.container.classList.toggle("loading", true);
           try {
-            const results = await this.api.autocomplete(params);
+            let results;
+            if (useSearch) {
+              results = await this.api.search(params);
+            } else {
+              results = await this.api.autocomplete(params);
+            }
 
             // Make sure we only use the latest request
             if (this.lastRequestAt === requestAt) {
@@ -174,11 +202,11 @@ export class MapLibreSearchControl implements IControl {
             }
           }
         }
-      } else {
-        setTimeout(() => {
-          this.onInput(e);
-        }, this.options.minWaitPeriodMs);
       }
+    } else {
+      setTimeout(() => {
+        this.onInput(e, useSearch);
+      }, this.options.minWaitPeriodMs);
     }
   }
 
@@ -256,6 +284,7 @@ export class MapLibreSearchControl implements IControl {
     this.maybeShowClearButton();
     this.clearResults();
     this.hideResults();
+    this.input.focus();
   }
 
   buildResult(result: PeliasGeoJSONFeature): HTMLDivElement {
