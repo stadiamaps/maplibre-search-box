@@ -9,7 +9,7 @@ import "./index.scss";
 import logo from "./logo.svg";
 
 export class MapLibreSearchControlOptions {
-  useMapFocusPoint = false;
+  useMapFocusPoint = true;
   mapFocusPointMinZoom = 5;
   fixedFocusPoint: [number, number] = null;
   searchOnEnter = false;
