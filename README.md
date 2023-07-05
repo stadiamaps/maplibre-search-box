@@ -115,10 +115,13 @@ A single point used to influence results (doesn't follow the map viewport).
 
 ### `searchOnEnter`
 
-Controls if pressing the Enter key uses the `/search` endpoint instead of the default `/autocomplete` endpoint.
+For address-based forward geocoding applications, it often makes sense to use the forward geocoding (`/search`) endpoint
+rather than autocomplete search, once you know that the user has completed their input. The full forward geocoding
+endpoint is able to interpolate addresses, and may provide better results with complete input than the autocomplete
+endpoint. Opting in to this behavior will send a final forward geocoding request if the user presses enter.
 
 Note: the `/search` endpoint is not available to all plans, so check if your plan supports `/search` before enabling
-this.
+this. You can find the full feature comparison on our [pricing page](https://stadiamaps.com/pricing/).
 
 ### `maxResults`
 
