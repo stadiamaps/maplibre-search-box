@@ -270,14 +270,14 @@ export class MapLibreSearchControl implements IControl {
         ],
         zoom: zoomTarget,
       });
-
-      // User-defined callback
-      if (this.options.onResultSelected) {
-        this.options.onResultSelected(feature);
-      }
     }
 
     this.hideResults();
+
+    // User-defined callback
+    if (this.options.onResultSelected) {
+      this.options.onResultSelected(feature);
+    }
   }
 
   onClear() {

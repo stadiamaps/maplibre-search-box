@@ -20,6 +20,9 @@
     <script type="application/javascript">
       var control = new maplibreSearchBox.MapLibreSearchControl({
         useMapFocusPoint: true,
+        onResultSelected: feature => {
+          console.log(feature.geometry.coordinates);
+        },
       });
       var map = new maplibregl.Map({
         container: "map",
