@@ -86,8 +86,8 @@ The `MapLibreSearchControl` constructor takes a set of options (as an object):
 ### Options Overview
 
 ```typescript
-class MapLibreSearchControlOptions {
-  useMapFocusPoint = false;
+export class MapLibreSearchControlOptions {
+  useMapFocusPoint = true;
   mapFocusPointMinZoom = 5;
   fixedFocusPoint: [number, number] = null;
   searchOnEnter = false;
@@ -95,6 +95,7 @@ class MapLibreSearchControlOptions {
   minInputLength = 3;
   minWaitPeriodMs = 100;
   layers: PeliasLayer[] = null;
+  onResultSelected?: (feature: PeliasGeoJSONFeature) => void;
 }
 ```
 
