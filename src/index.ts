@@ -32,6 +32,8 @@ export class MapLibreSearchControl implements IControl {
   private lastRequestAt = 0;
   private lastRequestString = "";
   private resultFeatures: PeliasGeoJSONFeature[] = [];
+  private selectedResultIndex: number | null = null;
+  private originalInput: string = "";
 
   options = new MapLibreSearchControlOptions();
 
@@ -67,7 +69,7 @@ export class MapLibreSearchControl implements IControl {
     this.input.placeholder = "Search for places...";
     this.input.addEventListener("input", this.onInput.bind(this));
     this.input.addEventListener("focus", this.onFocus.bind(this));
-    this.input.addEventListener("keypress", this.onKey.bind(this));
+    this.input.addEventListener("keydown", this.onKey.bind(this));
     this.input.enterKeyHint = "search";
 
     this.resultsContainer = container.appendChild(
@@ -111,6 +113,9 @@ export class MapLibreSearchControl implements IControl {
       case "Enter":
         if (this.options.searchOnEnter) {
           await this.onInput(e, true);
+        } else if (this.selectedResultIndex !== null) {
+          this.onSelected(this.resultFeatures[this.selectedResultIndex]);
+          this.input.blur();
         }
         break;
       case "Escape":
@@ -118,9 +123,42 @@ export class MapLibreSearchControl implements IControl {
         break;
       case "ArrowDown":
       case "ArrowUp":
-        // TODO
+        e.preventDefault(); // prevent the input field from consuming the event
+        this.handleArrowKey(e.key);
         break;
     }
+  }
+
+  handleArrowKey(key: string) {
+    if (key === "ArrowDown") {
+      if (this.selectedResultIndex === null) {
+        this.selectedResultIndex = 0;
+        this.originalInput = this.input.value;
+      } else if (this.selectedResultIndex < this.resultFeatures.length - 1) {
+        this.selectedResultIndex++;
+      }
+    } else if (key === "ArrowUp") {
+      if (this.selectedResultIndex > 0) {
+        this.selectedResultIndex--;
+      } else if (this.selectedResultIndex === 0) {
+        this.selectedResultIndex = null;
+        this.input.value = this.originalInput;
+      }
+    }
+
+    this.updateSelectedResult();
+  }
+
+  updateSelectedResult() {
+    const results = Array.from(this.resultsList.children);
+    results.forEach((result, index) => {
+      if (index === this.selectedResultIndex) {
+        result.classList.add("hover");
+        this.input.value = this.resultFeatures[index].properties.label;
+      } else {
+        result.classList.remove("hover");
+      }
+    });
   }
 
   async onInput(e: Event, useSearch = false) {
@@ -263,7 +301,7 @@ export class MapLibreSearchControl implements IControl {
         default:
           zoomTarget = 10;
       }
-      this.map.jumpTo({
+      this.map.flyTo({
         center: [
           feature.geometry.coordinates[0],
           feature.geometry.coordinates[1],
@@ -291,7 +329,11 @@ export class MapLibreSearchControl implements IControl {
   buildResult(result: PeliasGeoJSONFeature): HTMLDivElement {
     const el = document.createElement("div");
     el.className = "result";
-    el.onclick = this.onSelected.bind(this, result);
+    el.onclick = () => {
+      this.selectedResultIndex = this.resultFeatures.indexOf(result);
+      this.updateSelectedResult();
+      this.onSelected(result);
+    };
 
     el.title = result.properties.label;
 
@@ -334,6 +376,8 @@ export class MapLibreSearchControl implements IControl {
   clearResults() {
     this.resultFeatures = [];
     this.resultsList.replaceChildren("");
+    this.selectedResultIndex = null;
+    this.originalInput = "";
   }
 
   onRemove(map: Map): void {

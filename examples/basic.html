@@ -21,6 +21,7 @@
       var control = new maplibreSearchBox.MapLibreSearchControl({
         useMapFocusPoint: true,
         onResultSelected: feature => {
+          // You can add code here to take some action when a result is selected.
           console.log(feature.geometry.coordinates);
         },
       });

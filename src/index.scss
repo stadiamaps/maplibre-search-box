@@ -46,7 +46,8 @@
       top: 9px;
       width: 20px;
 
-      &:hover {
+      &:hover,
+      &.hover {
         opacity: 1;
       }
 
@@ -102,7 +103,8 @@
       font-size: 1rem;
       padding: 5px;
 
-      &:hover {
+      &:hover,
+      &.hover {
         background: #dfdfdf;
       }
 
@@ -114,7 +116,8 @@
     .no-result {
       font-style: italic;
 
-      &:hover {
+      &:hover,
+      &.hover {
         background: inherit;
         cursor: inherit;
       }
