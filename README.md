@@ -141,6 +141,11 @@ the [Layers documentation](https://docs.stadiamaps.com/geocoding-search-autocomp
 Note: if you want the fastest possible search, but don't mind excluding addresses or Point of Interest (`venue`)
 results, use `['coarse']` for the best performance.
 
+### `onResultSelected`
+
+A callback to be invoked whenever a result is selected by the user. This is invoked with a single argument, the
+`PeliasFeature` for the result. This allows you take an action (such as autofilling your own form).
+
 ## Development
 
 - `dev` - starts dev server

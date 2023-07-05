@@ -17,6 +17,7 @@ export class MapLibreSearchControlOptions {
   minInputLength = 3;
   minWaitPeriodMs = 100;
   layers: PeliasLayer[] = null;
+  onResultSelected?: (feature: PeliasGeoJSONFeature) => void;
 }
 
 export class MapLibreSearchControl implements IControl {
@@ -34,13 +35,8 @@ export class MapLibreSearchControl implements IControl {
 
   options = new MapLibreSearchControlOptions();
 
-  constructor(options: object | MapLibreSearchControlOptions) {
-    if (options !== undefined) {
-      this.options = {
-        ...this.options,
-        ...options,
-      };
-    }
+  constructor(options: Partial<MapLibreSearchControlOptions> = {}) {
+    this.options = Object.assign(new MapLibreSearchControlOptions(), options);
   }
 
   onAdd(map: Map): HTMLElement {
@@ -220,7 +216,7 @@ export class MapLibreSearchControl implements IControl {
     this.resultsList.appendChild(el);
   }
 
-  onClick(feature: PeliasGeoJSONFeature) {
+  onSelected(feature: PeliasGeoJSONFeature) {
     if (feature.bbox !== undefined) {
       this.map.fitBounds([
         [feature.bbox[0], feature.bbox[1]],
@@ -274,6 +270,11 @@ export class MapLibreSearchControl implements IControl {
         ],
         zoom: zoomTarget,
       });
+
+      // User-defined callback
+      if (this.options.onResultSelected) {
+        this.options.onResultSelected(feature);
+      }
     }
 
     this.hideResults();
@@ -290,7 +291,7 @@ export class MapLibreSearchControl implements IControl {
   buildResult(result: PeliasGeoJSONFeature): HTMLDivElement {
     const el = document.createElement("div");
     el.className = "result";
-    el.onclick = this.onClick.bind(this, result);
+    el.onclick = this.onSelected.bind(this, result);
 
     el.title = result.properties.label;
 
