@@ -96,6 +96,7 @@ export class MapLibreSearchControlOptions {
   minWaitPeriodMs = 100;
   layers: PeliasLayer[] = null;
   onResultSelected?: (feature: PeliasGeoJSONFeature) => void;
+  baseUrl: string | null = null;
 }
 ```
 
@@ -149,6 +150,12 @@ results, use `['coarse']` for the best performance.
 
 A callback to be invoked whenever a result is selected by the user. This is invoked with a single argument, the
 `PeliasFeature` for the result. This allows you take an action (such as autofilling your own form).
+
+### `baseUrl`
+
+An optional override to the base API URL. This defaults to the primary Stadia Maps API endpoint. If you want
+to use our [EU endpoints](https://docs.stadiamaps.com/eu-gdpr-endpoints/) to ensure traffic is handled by EU servers,
+set the `baseUrl` to `https://api-eu.stadiamaps.com`.
 
 ## Development
 

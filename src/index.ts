@@ -1,6 +1,7 @@
 import type { IControl, Map } from "maplibre-gl";
 import {
   type AutocompleteRequest,
+  Configuration,
   GeocodingApi,
   PeliasGeoJSONFeature,
   PeliasLayer,
@@ -18,6 +19,7 @@ export class MapLibreSearchControlOptions {
   minWaitPeriodMs = 100;
   layers: PeliasLayer[] = null;
   onResultSelected?: (feature: PeliasGeoJSONFeature) => void;
+  baseUrl: string | null = null;
 }
 
 export class MapLibreSearchControl implements IControl {
@@ -28,17 +30,20 @@ export class MapLibreSearchControl implements IControl {
   private input: HTMLInputElement | null = null;
   private clearButton: HTMLElement | null = null;
   private loadingSpinner: HTMLElement | null = null;
-  private api = new GeocodingApi();
+  private api: GeocodingApi;
   private lastRequestAt = 0;
   private lastRequestString = "";
   private resultFeatures: PeliasGeoJSONFeature[] = [];
   private selectedResultIndex: number | null = null;
-  private originalInput: string = "";
+  private originalInput = "";
 
   options = new MapLibreSearchControlOptions();
 
   constructor(options: Partial<MapLibreSearchControlOptions> = {}) {
     this.options = Object.assign(new MapLibreSearchControlOptions(), options);
+    this.api = new GeocodingApi(
+      new Configuration({ basePath: options.baseUrl })
+    );
   }
 
   onAdd(map: Map): HTMLElement {

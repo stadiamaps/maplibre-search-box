@@ -7,3 +7,7 @@
 ## v0.5.0
 
 - Adds arrow key-based navigation!
+
+## v0.6.0
+
+- Support changing the base URL (ex: for EU endpoints)
