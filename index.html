@@ -19,11 +19,12 @@
 
       var control = new MapLibreSearchControl({
         useMapFocusPoint: true,
+        searchOnEnter: true,
       });
       var navControl = new maplibregl.NavigationControl();
       var map = new maplibregl.Map({
         container: "map",
-        style: "https://tiles.stadiamaps.com/styles/alidade_smooth.json", // stylesheet location
+        style: "https://tiles.stadiamaps.com/styles/outdoors.json", // stylesheet location
         center: [-74.5, 40], // starting position [lng, lat]
         zoom: 2, // starting zoom
         hash: "map",

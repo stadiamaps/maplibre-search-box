@@ -116,11 +116,11 @@ export class MapLibreSearchControl implements IControl {
   async onKey(e: KeyboardEvent) {
     switch (e.key) {
       case "Enter":
-        if (this.options.searchOnEnter) {
-          await this.onInput(e, true);
-        } else if (this.selectedResultIndex !== null) {
+        if (this.selectedResultIndex !== null) {
           this.onSelected(this.resultFeatures[this.selectedResultIndex]);
           this.input.blur();
+        } else if (this.options.searchOnEnter) {
+          await this.onInput(e, true);
         }
         break;
       case "Escape":
