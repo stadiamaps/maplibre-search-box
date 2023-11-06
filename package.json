@@ -22,7 +22,8 @@
   "exports": {
     ".": {
       "require": "./dist/maplibre-search-box.umd.js",
-      "import": "./dist/maplibre-search-box.mjs"
+      "import": "./dist/maplibre-search-box.mjs",
+      "types": "./dist/index.d.ts"
     },
     "./dist/*.css": {
       "require": "./dist/*.css",
