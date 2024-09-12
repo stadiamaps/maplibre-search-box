@@ -99,6 +99,7 @@ export class MapLibreSearchControl implements IControl {
     return this.container;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async onFocus(_e: Event) {
     if (this.resultFeatures.length > 0) {
       this.showResults();
@@ -234,7 +235,7 @@ export class MapLibreSearchControl implements IControl {
               }
             }
           } catch (e) {
-            console.warn("Something when wrong with the request.");
+            console.warn(`Something when wrong with the request: ${e}`);
           } finally {
             if (this.lastRequestAt === requestAt) {
               this.container.classList.toggle("loading", false);

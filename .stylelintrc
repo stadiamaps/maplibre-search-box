@@ -1,9 +1,8 @@
 {
-  "plugins": ["stylelint-prettier"],
+  "plugins": [],
   "extends": [
     "stylelint-config-recommended",
-    "stylelint-config-sass-guidelines",
-    "stylelint-config-prettier"
+    "stylelint-config-sass-guidelines"
   ],
   "overrides": [
     {
@@ -12,8 +11,6 @@
     }
   ],
   "rules": {
-    "prettier/prettier": true,
-    "function-parentheses-space-inside": null,
     "no-descending-specificity": null,
     "max-nesting-depth": 3,
     "selector-max-id": 1
