@@ -54,7 +54,7 @@
       &::before,
       &::after {
         background-color: #fff;
-        content: " ";
+        content: ' ';
         height: 10px;
         left: 9px;
         position: absolute;
@@ -123,6 +123,11 @@
       }
     }
 
+    .result-icon {
+      float: left;
+      vertical-align: middle;
+    }
+
     .result-label {
       font-weight: 500;
       overflow: hidden;
@@ -133,6 +138,8 @@
     .result-extra {
       font-size: 0.7rem;
       font-style: italic;
+      overflow: hidden;
+      text-overflow: ellipsis;
       text-transform: uppercase;
     }
   }
@@ -170,7 +177,7 @@
     border: $spinner-height * 0.075 solid #fff;
     border-color: #ccc transparent;
     border-radius: 50%;
-    content: " ";
+    content: ' ';
     display: block;
     height: $spinner-height * 0.8;
     margin: $spinner-height * 0.1;
