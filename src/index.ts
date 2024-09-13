@@ -10,19 +10,19 @@ import {
 import "./index.scss";
 
 // Stadia Maps logo
-import logo from "./logo.svg";
+import logo from "./assets/logo.svg";
 
 // Place type icons
-import location_pin from "./location_on.svg";
-import address from "./123.svg";
-import road from "./road.svg";
-import post_box from "./post_box.svg";
+import location_pin from "./assets/location_on.svg";
+import address from "./assets/123.svg";
+import road from "./assets/road.svg";
+import post_box from "./assets/post_box.svg";
 // NOTE: UK globe selected because Google's other icons had such bad fidelity
 // that they were unrecognizable as an outline of a country/region
-import globe from "./globe.svg";
-import globe_lines from "./globe_lines.svg";
-import location_city from "./location_city.svg";
-import water from "./water.svg";
+import globe from "./assets/globe.svg";
+import globe_lines from "./assets/globe_lines.svg";
+import location_city from "./assets/location_city.svg";
+import water from "./assets/water.svg";
 
 export class MapLibreSearchControlOptions {
   useMapFocusPoint = true;
