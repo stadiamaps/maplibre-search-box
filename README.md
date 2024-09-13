@@ -17,7 +17,7 @@ Adding the search box to a map is straightforward:
 2. Instantiate the control (optionally customize the settings).
 3. Add the control to the map.
 
-### Getting a Stadia Maps account
+### Create a Stadia Maps account
 
 You can try everything out locally in a web browser without any special setup!
 To deploy to an internet server though, you'll need a Stadia Maps account.
