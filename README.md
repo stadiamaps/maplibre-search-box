@@ -1,6 +1,6 @@
 # Stadia Maps MapLibre Search Box
 
-[![npm version](https://badge.fury.io/js/@stadiamaps%2Fmaplibre-search-box.svg)](https://badge.fury.io/js/@stadiamaps%2Fmaplibre-search-box)
+[![npm version](https://badge.fury.io/js/@stadiamaps%2Fmaplibre-search-box.svg)](https://badge.fury.io/js/@stadiamaps%2Fmaplibre-search-box) ![NPM Downloads](https://img.shields.io/npm/dm/%40stadiamaps%2Fmaplibre-search-box)
 
 This [MapLibre GL JS](https://maplibre.org/projects/maplibre-gl-js/) plugin adds support for the [Stadia Maps Search
 Autocomplete APIs](https://docs.stadiamaps.com/geocoding-search-autocomplete/overview/) to any MapLibre GL JS map.
