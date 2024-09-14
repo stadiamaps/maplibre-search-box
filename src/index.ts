@@ -4,10 +4,25 @@ import {
   Configuration,
   GeocodingApi,
   PeliasGeoJSONFeature,
+  PeliasGeoJSONProperties,
   PeliasLayer,
 } from "@stadiamaps/api";
 import "./index.scss";
-import logo from "./logo.svg";
+
+// Stadia Maps logo
+import logo from "./assets/logo.svg";
+
+// Place type icons
+import location_pin from "./assets/location_on.svg";
+import address from "./assets/123.svg";
+import road from "./assets/road.svg";
+import post_box from "./assets/post_box.svg";
+// NOTE: UK globe selected because Google's other icons had such bad fidelity
+// that they were unrecognizable as an outline of a country/region
+import globe from "./assets/globe.svg";
+import globe_lines from "./assets/globe_lines.svg";
+import location_city from "./assets/location_city.svg";
+import water from "./assets/water.svg";
 
 export class MapLibreSearchControlOptions {
   useMapFocusPoint = true;
@@ -99,6 +114,7 @@ export class MapLibreSearchControl implements IControl {
     return this.container;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async onFocus(_e: Event) {
     if (this.resultFeatures.length > 0) {
       this.showResults();
@@ -159,7 +175,7 @@ export class MapLibreSearchControl implements IControl {
     results.forEach((result, index) => {
       if (index === this.selectedResultIndex) {
         result.classList.add("hover");
-        this.input.value = this.resultFeatures[index].properties.label;
+        this.input.value = this.resultFeatures[index].properties.name;
       } else {
         result.classList.remove("hover");
       }
@@ -234,7 +250,7 @@ export class MapLibreSearchControl implements IControl {
               }
             }
           } catch (e) {
-            console.warn("Something when wrong with the request.");
+            console.warn(`Something when wrong with the request: ${e}`);
           } finally {
             if (this.lastRequestAt === requestAt) {
               this.container.classList.toggle("loading", false);
@@ -331,6 +347,84 @@ export class MapLibreSearchControl implements IControl {
     this.input.focus();
   }
 
+  subtitle(properties: PeliasGeoJSONProperties): string {
+    let components: string[] = [];
+    switch (properties.layer) {
+      case "venue":
+      case "address":
+      case "street":
+      case "neighbourhood":
+      case "postalcode":
+      case "macrohood":
+        components = [
+          properties.locality ?? properties.region,
+          properties.country,
+        ];
+        break;
+      case "country":
+      case "dependency":
+      case "disputed":
+        components = [properties.continent];
+        break;
+      case "macroregion":
+      case "region":
+        components = [properties.country];
+        break;
+      case "macrocounty":
+      case "county":
+      case "locality":
+      case "localadmin":
+      case "borough":
+        components = [properties.region, properties.country];
+        break;
+      case "coarse":
+      case "marinearea":
+      case "empire":
+      case "continent":
+      case "ocean":
+        break;
+    }
+
+    return components.filter(x => x !== null && x !== undefined).join(", ");
+  }
+
+  icon(properties: PeliasGeoJSONProperties): string {
+    switch (properties.layer) {
+      case "venue":
+        return location_pin;
+      case "address":
+        return address;
+      case "street":
+        return road;
+      case "postalcode":
+        return post_box;
+      case "localadmin":
+      case "locality":
+      case "borough":
+      case "neighbourhood":
+      case "macrohood":
+      case "coarse": // Never actually encountered
+        return location_city;
+      case "county":
+      case "macroregion":
+      case "macrocounty":
+      // The regions above this line which are bigger than a "city"
+      // but smaller than a "state" or similar unit
+      // could do with a better icon, but finding one has proven elusive
+      case "region":
+      case "country":
+      case "dependency":
+      case "disputed":
+        return globe;
+      case "empire":
+      case "continent":
+        return globe_lines;
+      case "marinearea":
+      case "ocean":
+        return water;
+    }
+  }
+
   buildResult(result: PeliasGeoJSONFeature): HTMLDivElement {
     const el = document.createElement("div");
     el.className = "result";
@@ -340,27 +434,19 @@ export class MapLibreSearchControl implements IControl {
       this.onSelected(result);
     };
 
-    el.title = result.properties.label;
+    el.title = result.properties.name;
+
+    const icon = el.appendChild(document.createElement("img"));
+    icon.src = this.icon(result.properties);
+    icon.className = "result-icon";
 
     const label = el.appendChild(document.createElement("div"));
-    label.textContent = result.properties.label;
+    label.textContent = result.properties.name;
     label.className = "result-label";
 
     const additionalText = el.appendChild(document.createElement("div"));
     additionalText.className = "result-extra";
-    let content = result.properties.layer;
-    if (
-      result.properties.layer == PeliasLayer.Country &&
-      result.properties.continent
-    ) {
-      content += ` in ${result.properties.continent}`;
-    } else if (
-      result.properties.layer != PeliasLayer.Continent &&
-      result.properties.country
-    ) {
-      content += ` in ${result.properties.country}`;
-    }
-    additionalText.textContent = content;
+    additionalText.textContent = this.subtitle(result.properties);
 
     return el;
   }

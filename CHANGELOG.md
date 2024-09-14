@@ -1,5 +1,11 @@
 # Change Log
 
+## v1.1.0
+
+- Replaces the layer text with an icon
+- Improves localizability
+- Fixes a variety of label truncation issues and generally makes the layout more compact
+
 ## v1.0.0
 
 - Fixes a bug with search-on-enter interfering with arrow key-based navigation (https://github.com/stadiamaps/maplibre-search-box/issues/1)

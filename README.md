@@ -6,13 +6,8 @@ This [MapLibre GL JS](https://maplibre.org/projects/maplibre-gl-js/) plugin adds
 Autocomplete APIs](https://docs.stadiamaps.com/geocoding-search-autocomplete/overview/) to any MapLibre GL JS map.
 
 Based on the [Stadia Maps TS SDK](https://www.npmjs.com/package/@stadiamaps/api), it automatically handles best-practice
-functionality for search, including debouncing of requests, caching of previous results, and navigating to the chosen result.
-
-### Notice: Account Required
-
-Using this plugin requires creating an account and setting up authentication at [Stadia Maps](https://stadiamaps.com).
-You may use the free tier as long as your usage stays under the limit; additional usage and some advanced functionality
-requires a paid plan. See Stadia Maps' [pricing](https://stadiamaps.com/pricing/) for all the details.
+functionality for search, including debouncing of requests, caching of previous results,
+and zooming the map when a result is selected.
 
 ## Getting Started
 
@@ -22,9 +17,19 @@ Adding the search box to a map is straightforward:
 2. Instantiate the control (optionally customize the settings).
 3. Add the control to the map.
 
-### Using Modules
+### Create a Stadia Maps account
 
-Install the package.
+You can try everything out locally in a web browser without any special setup!
+To deploy to an internet server though, you'll need a Stadia Maps account.
+Learn more about how we authenticate requests in our
+[documentation](https://docs.stadiamaps.com/authentication/?utm_source=github&utm_campaign=sdk_readme&utm_content=maplibre_search_box_readme),
+and sign up for a free account (no credit card required)
+using our [client dashboard](https://client.stadiamaps.com/signup/?utm_source=github&utm_campaign=sdk_readme&utm_content=maplibre_search_box_readme).
+
+### Using build tooling
+
+First, add `@stadiamaps/maplibre-search-box` as a dependency of your project using your favorite package manager
+like `npm` or `yarn`.
 
 ```shell
 $ npm install --save @stadiamaps/maplibre-search-box
