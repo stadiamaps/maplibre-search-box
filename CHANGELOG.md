@@ -1,5 +1,11 @@
 # Change Log
 
+## v2.0.0
+
+- BREAKING: Upgrades to the latest version of the Stadia Maps TypeScript API. This exposes some new fields, unlocking even more use cases. It also means some of the type names changed, so this is a major release.
+
+Migration: you can migrate any broken imports or type names by renaming `Pelias` to `Geocoding`.
+
 ## v1.1.0
 
 - Replaces the layer text with an icon
