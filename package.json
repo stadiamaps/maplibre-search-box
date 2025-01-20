@@ -1,6 +1,6 @@
 {
   "name": "@stadiamaps/maplibre-search-box",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "homepage": "https://docs.stadiamaps.com/",
   "repository": "https://github.com/stadiamaps/maplibre-search-box",
   "license": "BSD-3-Clause",
@@ -64,7 +64,7 @@
     "stylelint-config-sass-guidelines": "^12.0.0",
     "ts-node": "^10.9.1",
     "typescript": "^5.1.3",
-    "vite": "5.4.3",
+    "vite": "5.4.6",
     "vite-plugin-dts": "^4.2.1",
     "vitest": "^2.0.5"
   },
@@ -72,6 +72,6 @@
     "maplibre-gl": ">=2.0.0"
   },
   "dependencies": {
-    "@stadiamaps/api": "^5.0.0"
+    "@stadiamaps/api": "^6.0.0"
   }
 }

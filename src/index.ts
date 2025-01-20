@@ -3,9 +3,9 @@ import {
   type AutocompleteRequest,
   Configuration,
   GeocodingApi,
-  PeliasGeoJSONFeature,
-  PeliasGeoJSONProperties,
-  PeliasLayer,
+  GeocodingGeoJSONFeature,
+  GeocodingGeoJSONProperties,
+  GeocodingLayer,
 } from "@stadiamaps/api";
 import "./index.scss";
 
@@ -32,8 +32,8 @@ export class MapLibreSearchControlOptions {
   maxResults = 5;
   minInputLength = 3;
   minWaitPeriodMs = 100;
-  layers: PeliasLayer[] = null;
-  onResultSelected?: (feature: PeliasGeoJSONFeature) => void;
+  layers: GeocodingLayer[] = null;
+  onResultSelected?: (feature: GeocodingGeoJSONFeature) => void;
   baseUrl: string | null = null;
 }
 
@@ -48,7 +48,7 @@ export class MapLibreSearchControl implements IControl {
   private api: GeocodingApi;
   private lastRequestAt = 0;
   private lastRequestString = "";
-  private resultFeatures: PeliasGeoJSONFeature[] = [];
+  private resultFeatures: GeocodingGeoJSONFeature[] = [];
   private selectedResultIndex: number | null = null;
   private originalInput = "";
 
@@ -275,7 +275,7 @@ export class MapLibreSearchControl implements IControl {
     this.resultsList.appendChild(el);
   }
 
-  onSelected(feature: PeliasGeoJSONFeature) {
+  onSelected(feature: GeocodingGeoJSONFeature) {
     if (feature.bbox !== undefined) {
       this.map.fitBounds([
         [feature.bbox[0], feature.bbox[1]],
@@ -347,7 +347,7 @@ export class MapLibreSearchControl implements IControl {
     this.input.focus();
   }
 
-  subtitle(properties: PeliasGeoJSONProperties): string {
+  subtitle(properties: GeocodingGeoJSONProperties): string {
     let components: string[] = [];
     switch (properties.layer) {
       case "venue":
@@ -388,7 +388,7 @@ export class MapLibreSearchControl implements IControl {
     return components.filter(x => x !== null && x !== undefined).join(", ");
   }
 
-  icon(properties: PeliasGeoJSONProperties): string {
+  icon(properties: GeocodingGeoJSONProperties): string {
     switch (properties.layer) {
       case "venue":
         return location_pin;
@@ -425,7 +425,7 @@ export class MapLibreSearchControl implements IControl {
     }
   }
 
-  buildResult(result: PeliasGeoJSONFeature): HTMLDivElement {
+  buildResult(result: GeocodingGeoJSONFeature): HTMLDivElement {
     const el = document.createElement("div");
     el.className = "result";
     el.onclick = () => {
@@ -451,7 +451,7 @@ export class MapLibreSearchControl implements IControl {
     return el;
   }
 
-  addResult(result: PeliasGeoJSONFeature) {
+  addResult(result: GeocodingGeoJSONFeature) {
     this.showResults();
     this.resultsList.appendChild(this.buildResult(result));
   }

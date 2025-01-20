@@ -99,8 +99,8 @@ export class MapLibreSearchControlOptions {
   maxResults = 5;
   minInputLength = 3;
   minWaitPeriodMs = 100;
-  layers: PeliasLayer[] = null;
-  onResultSelected?: (feature: PeliasGeoJSONFeature) => void;
+  layers: GeocodingLayer[] = null;
+  onResultSelected?: (feature: GeocodingGeoJSONFeature) => void;
   baseUrl: string | null = null;
 }
 ```
@@ -154,7 +154,7 @@ results, use `['coarse']` for the best performance.
 ### `onResultSelected`
 
 A callback to be invoked whenever a result is selected by the user. This is invoked with a single argument, the
-`PeliasFeature` for the result. This allows you take an action (such as autofilling your own form).
+`GeocodingFeature` for the result. This allows you take an action (such as autofilling your own form).
 
 ### `baseUrl`
 
