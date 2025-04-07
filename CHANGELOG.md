@@ -1,6 +1,5 @@
 # Change Log
 
-
 ## v2.0.0
 
 - Upgrades to the new v2 autocomplete + place details endpoint, bringing you faster responses and better results.
