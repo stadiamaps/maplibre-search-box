@@ -1,10 +1,14 @@
 # Change Log
 
+
 ## v2.0.0
 
-- BREAKING: Upgrades to the latest version of the Stadia Maps TypeScript API. This exposes some new fields, unlocking even more use cases. It also means some of the type names changed, so this is a major release.
-
-Migration: you can migrate any broken imports or type names by renaming `Pelias` to `Geocoding`.
+- Upgrades to the new v2 autocomplete + place details endpoint, bringing you faster responses and better results.
+  And did we mention it's also cheaper?!
+- BREAKING: We've reworked the response format to include more details.
+  Geometry is unchanged, but some of the properties are different.
+  Refer to our [migration guide](https://docs.stadiamaps.com/geocoding-search-autocomplete/v2-api-migration-guide/)
+  for an overview of the structural changes.
 
 ## v1.1.0
 

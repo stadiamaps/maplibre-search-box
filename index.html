@@ -4,9 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Search Test</title>
-    <script src="https://unpkg.com/maplibre-gl@4.7.0/dist/maplibre-gl.js"></script>
+    <script src="https://unpkg.com/maplibre-gl@5.3.0/dist/maplibre-gl.js"></script>
     <link
-      href="https://unpkg.com/maplibre-gl@4.7.0/dist/maplibre-gl.css"
+      href="https://unpkg.com/maplibre-gl@5.3.0/dist/maplibre-gl.css"
       rel="stylesheet"
     />
     <script src="./src/index.ts" type="module"></script>
@@ -29,7 +29,7 @@
         zoom: 2, // starting zoom
         hash: "map",
       });
-      map.addControl(navControl, "top-left");
+      map.addControl(navControl, "top-right");
       map.addControl(control, "top-left");
     </script>
   </body>

@@ -1,11 +1,14 @@
 import type { IControl, Map } from "maplibre-gl";
 import {
-  type AutocompleteRequest,
+  type AutocompleteV2Request,
   Configuration,
+  FeaturePropertiesV2,
   GeocodingApi,
   GeocodingGeoJSONFeature,
   GeocodingGeoJSONProperties,
-  GeocodingLayer,
+  LayerId,
+  SearchRequest,
+  WofContextComponent,
 } from "@stadiamaps/api";
 import "./index.scss";
 
@@ -32,8 +35,8 @@ export class MapLibreSearchControlOptions {
   maxResults = 5;
   minInputLength = 3;
   minWaitPeriodMs = 100;
-  layers: GeocodingLayer[] = null;
-  onResultSelected?: (feature: GeocodingGeoJSONFeature) => void;
+  layers: LayerId[] = null;
+  onResultSelected?: (feature: FeaturePropertiesV2) => void;
   baseUrl: string | null = null;
 }
 
@@ -48,7 +51,7 @@ export class MapLibreSearchControl implements IControl {
   private api: GeocodingApi;
   private lastRequestAt = 0;
   private lastRequestString = "";
-  private resultFeatures: GeocodingGeoJSONFeature[] = [];
+  private resultFeatures: FeaturePropertiesV2[] = [];
   private selectedResultIndex: number | null = null;
   private originalInput = "";
 
@@ -200,7 +203,7 @@ export class MapLibreSearchControl implements IControl {
     ) {
       if (searchString.length >= this.options.minInputLength) {
         if (searchString !== this.lastRequestString || useSearch) {
-          const params: AutocompleteRequest = {
+          const params: AutocompleteV2Request = {
             text: searchString,
             size: this.options.maxResults,
           };
@@ -230,17 +233,32 @@ export class MapLibreSearchControl implements IControl {
           this.lastRequestAt = requestAt;
           this.container.classList.toggle("loading", true);
           try {
-            let results;
+            let features;
             if (useSearch) {
-              results = await this.api.search(params);
+              // FIXME: Some hacks until we launch search v2
+              let searchParams: SearchRequest = {
+                text: params.text,
+              };
+              Object.assign(searchParams, params);
+              searchParams.layers = params.layers?.map(layerId => {
+                switch (layerId) {
+                  case "poi":
+                    return "venue";
+                  default:
+                    return layerId;
+                }
+              });
+              let response = await this.api.search(searchParams);
+              features = response.features.map(upcastLegacyFeature);
             } else {
-              results = await this.api.autocomplete(params);
+              let response = await this.api.autocompleteV2(params);
+              features = response.features;
             }
 
             // Make sure we only use the latest request
             if (this.lastRequestAt === requestAt) {
               this.clearResults();
-              this.resultFeatures = results.features;
+              this.resultFeatures = features;
               if (this.resultFeatures.length > 0) {
                 for (const result of this.resultFeatures) {
                   this.addResult(result);
@@ -275,8 +293,17 @@ export class MapLibreSearchControl implements IControl {
     this.resultsList.appendChild(el);
   }
 
-  onSelected(feature: GeocodingGeoJSONFeature) {
-    if (feature.bbox !== undefined) {
+  async onSelected(feature: FeaturePropertiesV2) {
+    if (!hasGeometry(feature)) {
+      // We need to get the full details if there isn't a geometry
+      const detail = await this.api.placeDetailsV2({
+        ids: [feature.properties.gid],
+      });
+      if (detail.features.length == 0) {
+        console.error("Unexpected place lookup response with zero results");
+      }
+      await this.onSelected(detail.features[0]);
+    } else if (feature.bbox !== undefined) {
       this.map.fitBounds([
         [feature.bbox[0], feature.bbox[1]],
         [feature.bbox[2], feature.bbox[3]],
@@ -285,8 +312,9 @@ export class MapLibreSearchControl implements IControl {
       let zoomTarget;
       switch (feature.properties.layer) {
         case "venue":
+        case "poi":
         case "address":
-          zoomTarget = 15;
+          zoomTarget = 16;
           break;
         case "marinearea":
         case "locality":
@@ -347,50 +375,10 @@ export class MapLibreSearchControl implements IControl {
     this.input.focus();
   }
 
-  subtitle(properties: GeocodingGeoJSONProperties): string {
-    let components: string[] = [];
-    switch (properties.layer) {
+  icon(layer: string): string {
+    switch (layer) {
       case "venue":
-      case "address":
-      case "street":
-      case "neighbourhood":
-      case "postalcode":
-      case "macrohood":
-        components = [
-          properties.locality ?? properties.region,
-          properties.country,
-        ];
-        break;
-      case "country":
-      case "dependency":
-      case "disputed":
-        components = [properties.continent];
-        break;
-      case "macroregion":
-      case "region":
-        components = [properties.country];
-        break;
-      case "macrocounty":
-      case "county":
-      case "locality":
-      case "localadmin":
-      case "borough":
-        components = [properties.region, properties.country];
-        break;
-      case "coarse":
-      case "marinearea":
-      case "empire":
-      case "continent":
-      case "ocean":
-        break;
-    }
-
-    return components.filter(x => x !== null && x !== undefined).join(", ");
-  }
-
-  icon(properties: GeocodingGeoJSONProperties): string {
-    switch (properties.layer) {
-      case "venue":
+      case "poi":
         return location_pin;
       case "address":
         return address;
@@ -422,13 +410,15 @@ export class MapLibreSearchControl implements IControl {
       case "marinearea":
       case "ocean":
         return water;
+      default:
+        return location_pin;
     }
   }
 
-  buildResult(result: GeocodingGeoJSONFeature): HTMLDivElement {
+  buildResult(result: FeaturePropertiesV2): HTMLDivElement {
     const el = document.createElement("div");
     el.className = "result";
-    el.onclick = () => {
+    el.onclick = async () => {
       this.selectedResultIndex = this.resultFeatures.indexOf(result);
       this.updateSelectedResult();
       this.onSelected(result);
@@ -437,7 +427,7 @@ export class MapLibreSearchControl implements IControl {
     el.title = result.properties.name;
 
     const icon = el.appendChild(document.createElement("img"));
-    icon.src = this.icon(result.properties);
+    icon.src = this.icon(result.properties.layer);
     icon.className = "result-icon";
 
     const label = el.appendChild(document.createElement("div"));
@@ -446,12 +436,13 @@ export class MapLibreSearchControl implements IControl {
 
     const additionalText = el.appendChild(document.createElement("div"));
     additionalText.className = "result-extra";
-    additionalText.textContent = this.subtitle(result.properties);
+    additionalText.textContent =
+      result.properties.coarseLocation || subtitle(result.properties);
 
     return el;
   }
 
-  addResult(result: GeocodingGeoJSONFeature) {
+  addResult(result: FeaturePropertiesV2) {
     this.showResults();
     this.resultsList.appendChild(this.buildResult(result));
   }
@@ -477,5 +468,120 @@ export class MapLibreSearchControl implements IControl {
     }
     this.container = null;
     this.map = null;
+  }
+}
+
+function hasGeometry(result: FeaturePropertiesV2): boolean {
+  return result.geometry !== null && result.geometry !== undefined;
+}
+
+// Legacy shims which we can remove as soon as the V2 search API is live.
+
+function subtitle(properties: GeocodingGeoJSONProperties): string {
+  let components: string[] = [];
+  switch (properties.layer) {
+    case "venue":
+    case "address":
+    case "street":
+    case "neighbourhood":
+    case "postalcode":
+    case "macrohood":
+      components = [
+        properties.locality ?? properties.region,
+        properties.country,
+      ];
+      break;
+    case "country":
+    case "dependency":
+    case "disputed":
+      components = [properties.continent];
+      break;
+    case "macroregion":
+    case "region":
+      components = [properties.country];
+      break;
+    case "macrocounty":
+    case "county":
+    case "locality":
+    case "localadmin":
+    case "borough":
+      components = [properties.region, properties.country];
+      break;
+    case "coarse":
+    case "marinearea":
+    case "empire":
+    case "continent":
+    case "ocean":
+      break;
+  }
+
+  return components.filter(x => x !== null && x !== undefined).join(", ");
+}
+
+function upcastLegacyFeature(
+  feature: GeocodingGeoJSONFeature
+): FeaturePropertiesV2 {
+  return {
+    type: "Feature",
+    bbox: feature.bbox,
+    properties: {
+      addendum: feature.properties.addendum,
+      addressComponents: {
+        number: feature.properties.housenumber,
+        street: feature.properties.street,
+        postalCode: feature.properties.postalcode,
+      },
+      coarseLocation: subtitle(feature.properties),
+      confidence: feature.properties.confidence,
+      context: {
+        whosonfirst: {
+          borough: extractWofContextcomponent(feature.properties, "borough"),
+          continent: extractWofContextcomponent(
+            feature.properties,
+            "continent"
+          ),
+          country: extractWofContextcomponent(feature.properties, "country"),
+          county: extractWofContextcomponent(feature.properties, "county"),
+          localadmin: extractWofContextcomponent(
+            feature.properties,
+            "localadmin"
+          ),
+          locality: extractWofContextcomponent(feature.properties, "locality"),
+          neighbourhood: extractWofContextcomponent(
+            feature.properties,
+            "neighbourhood"
+          ),
+          region: extractWofContextcomponent(feature.properties, "region"),
+        },
+        iso3166A2: feature.properties.countryCode,
+        iso3166A3: feature.properties.countryA,
+      },
+      gid: feature.properties.gid,
+      layer:
+        feature.properties.layer === "venue" ? "poi" : feature.properties.layer,
+      name: feature.properties.name,
+      precision: feature.properties.accuracy,
+      sources: [
+        {
+          source: feature.properties.source,
+          sourceId: feature.properties.sourceId,
+        },
+      ],
+    },
+  };
+}
+
+function extractWofContextcomponent(
+  properties: GeocodingGeoJSONProperties,
+  key: string
+): WofContextComponent | undefined {
+  if (properties[key] && properties[`${key}GID`]) {
+    return {
+      name: properties[key],
+      gid: properties[`${key}GID`],
+      abbreviation: properties[`${key}A`],
+    };
+  } else {
+    return undefined;
   }
 }
