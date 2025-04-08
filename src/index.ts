@@ -31,7 +31,7 @@ export class MapLibreSearchControlOptions {
   useMapFocusPoint = true;
   mapFocusPointMinZoom = 5;
   fixedFocusPoint: [number, number] = null;
-  searchOnEnter = false;
+  searchOnEnter = true;
   maxResults = 5;
   minInputLength = 3;
   minWaitPeriodMs = 100;
