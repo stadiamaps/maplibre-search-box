@@ -1,5 +1,16 @@
 # Change Log
 
+## v3.0.1
+
+This fixes a few bugs we found after releasing v3.0.0.
+However, almost everything is related to documentation and package metadata,
+not actual code:
+
+- Fixed the package.json metadata path to the stylesheet.
+- Updated examples to use the new CSS path.
+- Removed documentation indicating that the `searchOnEnter` was only available on some plans (we've changed this!).
+- Search on enter is now enabled by default.
+
 ## v3.0.0
 
 - Upgrades to the new v2 autocomplete + place details endpoint, bringing you faster responses and better results.
