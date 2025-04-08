@@ -1,5 +1,10 @@
 # Change Log
 
+## v3.0.2
+
+This fixes a bug where the geometry was not transferred to interpolated results,
+leading to unexpected behavior when trying to select a result and zoom, route, etc. to it.
+
 ## v3.0.1
 
 This fixes a few bugs we found after releasing v3.0.0.

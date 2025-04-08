@@ -524,6 +524,7 @@ function upcastLegacyFeature(
   return {
     type: "Feature",
     bbox: feature.bbox,
+    geometry: feature.geometry,
     properties: {
       addendum: feature.properties.addendum,
       addressComponents: {
