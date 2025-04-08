@@ -14,7 +14,7 @@
   ],
   "main": "./dist/maplibre-search-box.umd.js",
   "module": "./dist/maplibre-search-box.mjs",
-  "style": "dist/style.css",
+  "style": "dist/maplibre-search-box.css",
   "files": [
     "dist"
   ],

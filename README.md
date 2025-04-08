@@ -39,7 +39,7 @@ Import and use the package along with the map. (Be sure to add the control to th
 
 ```typescript
 import { MapLibreSearchControl } from "@stadiamaps/maplibre-search-box";
-import "@stadiamaps/maplibre-search-box/dist/style.css";
+import "@stadiamaps/maplibre-search-box/dist/maplibre-search-box.css";
 
 const control = new MapLibreSearchControl();
 const map = new maplibregl.Map({
@@ -61,7 +61,7 @@ Add this to your `<head>`:
   type="application/javascript"
 ></script>
 <link
-  href="https://unpkg.com/browse/@stadiamaps/maplibre-search-box/dist/style.css"
+  href="https://unpkg.com/@stadiamaps/maplibre-search-box/dist/maplibre-search-box.css"
   rel="stylesheet"
 />
 ```
