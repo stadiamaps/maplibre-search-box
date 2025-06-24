@@ -424,7 +424,7 @@ export class MapLibreSearchControl implements IControl {
     el.onclick = async () => {
       this.selectedResultIndex = this.resultFeatures.indexOf(result);
       this.updateSelectedResult();
-      this.onSelected(result);
+      await this.onSelected(result);
     };
 
     el.title = result.properties.name;
