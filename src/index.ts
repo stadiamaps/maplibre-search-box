@@ -539,23 +539,23 @@ function upcastLegacyFeature(
       confidence: feature.properties.confidence,
       context: {
         whosonfirst: {
-          borough: extractWofContextcomponent(feature.properties, "borough"),
-          continent: extractWofContextcomponent(
+          borough: extractWofContextComponent(feature.properties, "borough"),
+          continent: extractWofContextComponent(
             feature.properties,
             "continent"
           ),
-          country: extractWofContextcomponent(feature.properties, "country"),
-          county: extractWofContextcomponent(feature.properties, "county"),
-          localadmin: extractWofContextcomponent(
+          country: extractWofContextComponent(feature.properties, "country"),
+          county: extractWofContextComponent(feature.properties, "county"),
+          localadmin: extractWofContextComponent(
             feature.properties,
             "localadmin"
           ),
-          locality: extractWofContextcomponent(feature.properties, "locality"),
-          neighbourhood: extractWofContextcomponent(
+          locality: extractWofContextComponent(feature.properties, "locality"),
+          neighbourhood: extractWofContextComponent(
             feature.properties,
             "neighbourhood"
           ),
-          region: extractWofContextcomponent(feature.properties, "region"),
+          region: extractWofContextComponent(feature.properties, "region"),
         },
         iso3166A2: feature.properties.countryCode,
         iso3166A3: feature.properties.countryA,
@@ -575,7 +575,7 @@ function upcastLegacyFeature(
   };
 }
 
-function extractWofContextcomponent(
+function extractWofContextComponent(
   properties: GeocodingGeoJSONProperties,
   key: string
 ): WofContextComponent | undefined {
