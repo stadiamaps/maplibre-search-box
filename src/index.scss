@@ -174,7 +174,8 @@
 
   .lds-dual-ring::after {
     animation: lds-dual-ring 1.2s linear infinite;
-    border: $spinner-height * 0.075 solid #fff;
+    border-width: $spinner-height * 0.075;
+    border-style: solid;
     border-color: #ccc transparent;
     border-radius: 50%;
     content: ' ';
