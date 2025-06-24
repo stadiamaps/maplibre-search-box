@@ -55,6 +55,9 @@ export class MapLibreSearchControl implements IControl {
   private selectedResultIndex: number | null = null;
   private originalInput = "";
 
+  private CLASS_PREFIX = "maplibre-search-box";
+  private LOADING_CLASS = `${this.CLASS_PREFIX}-loading`;
+
   options = new MapLibreSearchControlOptions();
 
   constructor(options: Partial<MapLibreSearchControlOptions> = {}) {
@@ -72,7 +75,7 @@ export class MapLibreSearchControl implements IControl {
 
   buildInput(): HTMLElement {
     const container = document.createElement("div");
-    container.className = "maplibregl-ctrl stadiamaps-search-box";
+    container.className = `maplibregl-ctrl ${this.CLASS_PREFIX}`;
     const inputContainer = container.appendChild(document.createElement("div"));
     inputContainer.className = "input-container";
 
@@ -231,7 +234,7 @@ export class MapLibreSearchControl implements IControl {
           this.lastRequestString = searchString;
           const requestAt = Date.now().valueOf();
           this.lastRequestAt = requestAt;
-          this.container.classList.toggle("loading", true);
+          this.container.classList.toggle(this.LOADING_CLASS, true);
           try {
             let features;
             if (useSearch) {
@@ -271,7 +274,7 @@ export class MapLibreSearchControl implements IControl {
             console.warn(`Something when wrong with the request: ${e}`);
           } finally {
             if (this.lastRequestAt === requestAt) {
-              this.container.classList.toggle("loading", false);
+              this.container.classList.toggle(this.LOADING_CLASS, false);
             }
           }
         }

@@ -1,10 +1,10 @@
-.stadiamaps-search-box {
+.maplibre-search-box {
   $spinner-height: 20px;
 
   box-sizing: content-box;
   width: 280px;
 
-  &.loading {
+  &.maplibre-search-box-loading {
     .spinner {
       display: block !important;
     }
