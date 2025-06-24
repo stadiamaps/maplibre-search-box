@@ -139,7 +139,7 @@ export class MapLibreSearchControl implements IControl {
     switch (e.key) {
       case "Enter":
         if (this.selectedResultIndex !== null) {
-          this.onSelected(this.resultFeatures[this.selectedResultIndex]);
+          await this.onSelected(this.resultFeatures[this.selectedResultIndex]);
           this.input.blur();
         } else if (this.options.searchOnEnter) {
           await this.onInput(e, true);
