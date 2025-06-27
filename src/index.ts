@@ -55,6 +55,9 @@ export class MapLibreSearchControl implements IControl {
   private selectedResultIndex: number | null = null;
   private originalInput = "";
 
+  private CLASS_PREFIX = "maplibre-search-box";
+  private LOADING_CLASS = `${this.CLASS_PREFIX}-loading`;
+
   options = new MapLibreSearchControlOptions();
 
   constructor(options: Partial<MapLibreSearchControlOptions> = {}) {
@@ -72,7 +75,7 @@ export class MapLibreSearchControl implements IControl {
 
   buildInput(): HTMLElement {
     const container = document.createElement("div");
-    container.className = "maplibregl-ctrl stadiamaps-search-box";
+    container.className = `maplibregl-ctrl ${this.CLASS_PREFIX}`;
     const inputContainer = container.appendChild(document.createElement("div"));
     inputContainer.className = "input-container";
 
@@ -136,7 +139,7 @@ export class MapLibreSearchControl implements IControl {
     switch (e.key) {
       case "Enter":
         if (this.selectedResultIndex !== null) {
-          this.onSelected(this.resultFeatures[this.selectedResultIndex]);
+          await this.onSelected(this.resultFeatures[this.selectedResultIndex]);
           this.input.blur();
         } else if (this.options.searchOnEnter) {
           await this.onInput(e, true);
@@ -231,7 +234,7 @@ export class MapLibreSearchControl implements IControl {
           this.lastRequestString = searchString;
           const requestAt = Date.now().valueOf();
           this.lastRequestAt = requestAt;
-          this.container.classList.toggle("loading", true);
+          this.container.classList.toggle(this.LOADING_CLASS, true);
           try {
             let features;
             if (useSearch) {
@@ -271,7 +274,7 @@ export class MapLibreSearchControl implements IControl {
             console.warn(`Something when wrong with the request: ${e}`);
           } finally {
             if (this.lastRequestAt === requestAt) {
-              this.container.classList.toggle("loading", false);
+              this.container.classList.toggle(this.LOADING_CLASS, false);
             }
           }
         }
@@ -421,7 +424,7 @@ export class MapLibreSearchControl implements IControl {
     el.onclick = async () => {
       this.selectedResultIndex = this.resultFeatures.indexOf(result);
       this.updateSelectedResult();
-      this.onSelected(result);
+      await this.onSelected(result);
     };
 
     el.title = result.properties.name;
@@ -536,23 +539,23 @@ function upcastLegacyFeature(
       confidence: feature.properties.confidence,
       context: {
         whosonfirst: {
-          borough: extractWofContextcomponent(feature.properties, "borough"),
-          continent: extractWofContextcomponent(
+          borough: extractWofContextComponent(feature.properties, "borough"),
+          continent: extractWofContextComponent(
             feature.properties,
             "continent"
           ),
-          country: extractWofContextcomponent(feature.properties, "country"),
-          county: extractWofContextcomponent(feature.properties, "county"),
-          localadmin: extractWofContextcomponent(
+          country: extractWofContextComponent(feature.properties, "country"),
+          county: extractWofContextComponent(feature.properties, "county"),
+          localadmin: extractWofContextComponent(
             feature.properties,
             "localadmin"
           ),
-          locality: extractWofContextcomponent(feature.properties, "locality"),
-          neighbourhood: extractWofContextcomponent(
+          locality: extractWofContextComponent(feature.properties, "locality"),
+          neighbourhood: extractWofContextComponent(
             feature.properties,
             "neighbourhood"
           ),
-          region: extractWofContextcomponent(feature.properties, "region"),
+          region: extractWofContextComponent(feature.properties, "region"),
         },
         iso3166A2: feature.properties.countryCode,
         iso3166A3: feature.properties.countryA,
@@ -572,7 +575,7 @@ function upcastLegacyFeature(
   };
 }
 
-function extractWofContextcomponent(
+function extractWofContextComponent(
   properties: GeocodingGeoJSONProperties,
   key: string
 ): WofContextComponent | undefined {
