@@ -1,5 +1,10 @@
 # Change Log
 
+## v3.1.1
+
+Fixes an issue where a scrollbar was always visible in the search results list,
+even when the content didn't overflow. The scrollbar now only appears when needed.
+
 ## v3.0.2
 
 This fixes a bug where the geometry was not transferred to interpolated results,
