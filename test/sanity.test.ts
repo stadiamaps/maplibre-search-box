@@ -35,4 +35,22 @@ describe("search-control", () => {
     const { mapEl } = setupMap();
     expect(mapEl).toMatchSnapshot();
   });
+
+  it("uses the default placeholder when none is provided", () => {
+    const control = new MapLibreSearchControl({});
+    const container = control.buildInput();
+    const input = container.querySelector("input");
+
+    expect(input?.placeholder).toBe("Search for places...");
+  });
+
+  it("uses the configured placeholder when provided", () => {
+    const control = new MapLibreSearchControl({
+      placeholder: "Suche nach Orten...",
+    });
+    const container = control.buildInput();
+    const input = container.querySelector("input");
+
+    expect(input?.placeholder).toBe("Suche nach Orten...");
+  });
 });

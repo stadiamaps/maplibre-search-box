@@ -102,6 +102,7 @@ export class MapLibreSearchControlOptions {
   layers: GeocodingLayer[] = null;
   onResultSelected?: (feature: GeocodingGeoJSONFeature) => void;
   baseUrl: string | null = null;
+  placeholder: string | null = null;
 }
 ```
 
@@ -159,6 +160,12 @@ A callback to be invoked whenever a result is selected by the user. This is invo
 An optional override to the base API URL. This defaults to the primary Stadia Maps API endpoint. If you want
 to use our [EU endpoints](https://docs.stadiamaps.com/eu-gdpr-endpoints/) to ensure traffic is handled by EU servers,
 set the `baseUrl` to `https://api-eu.stadiamaps.com`.
+
+### `placeholder`
+
+An optional override for the search input's placeholder text. Consuming applications are responsible for translating
+or customizing this string themselves; the widget simply renders whatever value is provided. Defaults to
+`"Search for places..."` when not set.
 
 ## Development
 

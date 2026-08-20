@@ -23,6 +23,9 @@ module.exports = defineConfig({
     },
     sourcemap: true
   },
-  test: {},
+  test: {
+    environment: "jsdom",
+    setupFiles: ["./test/setup.ts"],
+  },
   plugins: [dts()]
 });
