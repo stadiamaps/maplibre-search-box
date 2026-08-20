@@ -37,6 +37,10 @@ export class MapLibreSearchControlOptions {
   minWaitPeriodMs = 100;
   layers: LayerId[] = null;
   onResultSelected?: (feature: FeaturePropertiesV2) => void;
+  onResults?: (results: {
+    query: string;
+    features: FeaturePropertiesV2[];
+  }) => void;
   baseUrl: string | null = null;
 }
 
@@ -262,6 +266,10 @@ export class MapLibreSearchControl implements IControl {
             if (this.lastRequestAt === requestAt) {
               this.clearResults();
               this.resultFeatures = features;
+              this.options.onResults?.({
+                query: searchString,
+                features: this.resultFeatures,
+              });
               if (this.resultFeatures.length > 0) {
                 for (const result of this.resultFeatures) {
                   this.addResult(result);
