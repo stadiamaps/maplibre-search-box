@@ -101,6 +101,7 @@ export class MapLibreSearchControlOptions {
   minWaitPeriodMs = 100;
   layers: GeocodingLayer[] = null;
   onResultSelected?: (feature: GeocodingGeoJSONFeature) => void;
+  onResults?: (results: { query: string; features: FeaturePropertiesV2[] }) => void;
   baseUrl: string | null = null;
 }
 ```
@@ -153,6 +154,12 @@ results, use `['coarse']` for the best performance.
 
 A callback to be invoked whenever a result is selected by the user. This is invoked with a single argument, the
 `GeocodingFeature` for the result. This allows you take an action (such as autofilling your own form).
+
+### `onResults`
+
+A callback to be invoked whenever a search request completes, with the query string and the resulting features
+(which may be an empty array). This is useful for tracking analytics (e.g., search text and result count) without
+needing to duplicate the underlying search request. It is not invoked if the request fails.
 
 ### `baseUrl`
 
