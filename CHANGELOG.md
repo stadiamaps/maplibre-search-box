@@ -1,6 +1,6 @@
 # Change Log
 
-## Unreleased
+## v3.2.0
 
 - Keyboard navigation now scrolls the results list so the highlighted result stays visible. Arrowing past the bottom
   (or back above the top) of a list long enough to overflow used to move the highlight out of sight; the list now
