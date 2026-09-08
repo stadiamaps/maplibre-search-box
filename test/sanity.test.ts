@@ -105,6 +105,110 @@ describe("search-control", () => {
     });
   });
 
+  describe("keyboard navigation", () => {
+    function place(name: string): FeaturePropertiesV2 {
+      return {
+        type: "Feature",
+        geometry: { type: "Point", coordinates: [-93.2650478, 44.9772995] },
+        properties: {
+          gid: `openstreetmap:poi:node/${name}`,
+          layer: "poi",
+          name,
+          precision: "point",
+        },
+      };
+    }
+
+    // jsdom implements neither layout nor `scrollIntoView`, so the most we can
+    // observe here is which result the control asks the browser to reveal;
+    // that the browser then scrolls only as far as needed is `nearest`'s job.
+    function resultsList(count: number): {
+      control: MapLibreSearchControl;
+      list: HTMLElement;
+      revealed: () => (string | undefined)[];
+    } {
+      const control = new MapLibreSearchControl({});
+      control.onAdd(fakeMap());
+
+      const features = Array.from({ length: count }, (_, i) =>
+        place(`Result ${i}`)
+      );
+      control["resultFeatures"] = features;
+      features.forEach(feature => control.addResult(feature));
+
+      const list = control
+        .getContainer()
+        .querySelector<HTMLElement>(".results-list");
+      const calls: Element[] = [];
+      Array.from(list.children).forEach(result => {
+        result.scrollIntoView = vi.fn((options?: unknown) => {
+          expect(options).toEqual({ block: "nearest" });
+          calls.push(result);
+        });
+      });
+
+      return {
+        control,
+        list,
+        revealed: () =>
+          calls.map(
+            result => result.querySelector(".result-label")?.textContent
+          ),
+      };
+    }
+
+    function arrow(control: MapLibreSearchControl, key: string, times = 1) {
+      for (let i = 0; i < times; i++) {
+        control.handleArrowKey(key);
+      }
+    }
+
+    it("reveals each result as the selection moves down", () => {
+      const { control, revealed } = resultsList(6);
+
+      arrow(control, "ArrowDown", 3);
+
+      expect(revealed()).toEqual(["Result 0", "Result 1", "Result 2"]);
+    });
+
+    it("reveals each result as the selection moves back up", () => {
+      const { control, revealed } = resultsList(6);
+
+      arrow(control, "ArrowDown", 6);
+      arrow(control, "ArrowUp", 2);
+
+      expect(revealed().slice(-2)).toEqual(["Result 4", "Result 3"]);
+    });
+
+    it("stops revealing once the selection leaves the list", () => {
+      const { control, revealed } = resultsList(6);
+
+      arrow(control, "ArrowDown"); // Selects the first result
+      arrow(control, "ArrowUp"); // ...and returns to the input
+
+      expect(revealed()).toEqual(["Result 0"]);
+    });
+
+    it("reveals only the selected result", () => {
+      const { control, list } = resultsList(6);
+
+      arrow(control, "ArrowDown", 2);
+
+      expect(list.children[0].scrollIntoView).toHaveBeenCalledTimes(1);
+      expect(list.children[1].scrollIntoView).toHaveBeenCalledTimes(1);
+      expect(list.children[2].scrollIntoView).not.toHaveBeenCalled();
+    });
+
+    it("returns to the top of the list when the results are replaced", () => {
+      const { control, list } = resultsList(6);
+
+      list.scrollTop = 140;
+      control.clearResults();
+
+      expect(list.scrollTop).toBe(0);
+    });
+  });
+
   describe("animationOptions", () => {
     // `onSelected` only touches the camera methods when the feature already
     // carries a geometry, so no API calls happen in any of these tests.

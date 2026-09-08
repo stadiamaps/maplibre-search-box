@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Keyboard navigation now scrolls the results list so the highlighted result stays visible. Arrowing past the bottom
+  (or back above the top) of a list long enough to overflow used to move the highlight out of sight; the list now
+  scrolls by just enough to keep the selection in view.
 - New `animationOptions` option controls the camera transition when a result is selected. It takes MapLibre's own
   `AnimationOptions`, so you can shorten the duration, supply an easing function, or set `animate: false` to move
   instantly (via `jumpTo`) instead of flying across — handy if you need the map's final bounds right away, or want to

@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Node 20 is too old for the test toolchain: jsdom 30 wants
+      # ^22.22.2 || ^24.15.0 || >=26, and the undici it pulls in wants >=22.19.
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint scripts
+        run: npm run lint:scripts
+
+      - name: Lint styles
+        run: npm run lint:styles
+
+      # `npm test` starts vitest in watch mode outside CI; be explicit instead
+      # of relying on its environment sniffing.
+      - name: Test
+        run: npx vitest run
+
+      - name: Build
+        run: npm run build
