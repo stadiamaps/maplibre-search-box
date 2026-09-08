@@ -28,7 +28,7 @@ export default [
       "coverage",
       "dist",
       "node_modules",
-      "vite.config.ts",
+      "vite.config.mts",
     ],
   },
 ];
