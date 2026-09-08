@@ -480,7 +480,14 @@ function hasGeometry(result: FeaturePropertiesV2): boolean {
 
 // Legacy shims which we can remove as soon as the V2 search API is live.
 
-function subtitle(properties: GeocodingGeoJSONProperties): string {
+// Only reads the coarse geographic fields, which are top-level on V1 properties
+// and absent from V2 properties (where the API supplies `coarseLocation` instead).
+function subtitle(
+  properties: Pick<
+    GeocodingGeoJSONProperties,
+    "layer" | "locality" | "region" | "country" | "continent"
+  >
+): string {
   let components: string[] = [];
   switch (properties.layer) {
     case "venue":

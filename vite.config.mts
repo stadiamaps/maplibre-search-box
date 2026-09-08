@@ -1,28 +1,26 @@
-/// <reference types="vitest" />
 import * as path from "path";
 import { defineConfig } from "vite";
 import dts from "vite-plugin-dts";
 
-module.exports = defineConfig({
+export default defineConfig({
   base: "./",
   build: {
-    minify: "esbuild",
+    minify: "oxc",
     lib: {
-      entry: path.resolve(__dirname, "src/index.ts"),
-      name: "maplibreSearchBox"
+      entry: path.resolve(import.meta.dirname, "src/index.ts"),
+      name: "maplibreSearchBox",
     },
-    rollupOptions: {
+    rolldownOptions: {
       // make sure to externalize deps that shouldn't be bundled
       // into your library
       external: ["maplibre-gl"],
       output: {
         // Provide global variables to use in the UMD build
         // for externalized deps
-        globals: {}
-      }
+        globals: {},
+      },
     },
-    sourcemap: true
+    sourcemap: true,
   },
-  test: {},
-  plugins: [dts()]
+  plugins: [dts()],
 });
