@@ -96,12 +96,16 @@ export class MapLibreSearchControlOptions {
   mapFocusPointMinZoom = 5;
   fixedFocusPoint: [number, number] = null;
   searchOnEnter = true;
+  hideResultsOnBlur = false;
   maxResults = 5;
   minInputLength = 3;
   minWaitPeriodMs = 100;
   layers: LayerId[] = null;
   onResultSelected?: (feature: FeaturePropertiesV2) => void;
-  onResults?: (results: { query: string; features: FeaturePropertiesV2[] }) => void;
+  onResults?: (results: {
+    query: string;
+    features: FeaturePropertiesV2[];
+  }) => void;
   baseUrl: string | null = null;
   lang: string | null = null;
   placeholder: string | null = null;
@@ -132,6 +136,21 @@ rather than autocomplete search, once you know that the user has completed their
 The full forward geocoding endpoint is able to interpolate addresses,
 and may provide better results with complete input than the autocomplete
 endpoint. Opting in to this behavior will send a final forward geocoding request if the user presses enter.
+
+### `hideResultsOnBlur`
+
+If set, the results list is hidden whenever the search input loses focus (for example, when the user clicks the map or
+tabs away), and shown again when the input is refocused. The results aren't discarded, so refocusing brings back the
+same list without another API request. Selecting a result still works as usual: pressing one keeps focus on the input
+long enough for the selection to register.
+
+Defaults to `false`, which leaves the results visible until the user selects one or clears the input.
+
+```javascript
+new MapLibreSearchControl({
+  hideResultsOnBlur: true,
+});
+```
 
 ### `maxResults`
 
@@ -227,7 +246,13 @@ With `animate: false`, results are placed with `jumpTo` rather than `flyTo`, and
 - `lint:scripts` - lint `.ts` files with eslint
 - `lint:styles` - lint `.css` and `.scss` files with stylelint
 - `format:scripts` - format `.ts`, `.html` and `.json` files with prettier
-- `format:styles` - format `.cs` and `.scss` files with stylelint
+- `format:styles` - format `.css` and `.scss` files with stylelint
 - `format` - format all with prettier and stylelint
+
+Formatting is split by file type: prettier owns scripts and markup, stylelint owns stylesheets. Prettier is configured
+(via `.prettierignore`) to skip `.css` and `.scss` entirely, because the two tools disagree about SCSS — notably on
+quote style, where prettier's preference fails stylelint's sass-guidelines preset and therefore CI. If you're changing
+stylesheet formatting, `stylelint --fix` is the tool to reach for.
+
 - `prepare` - script for setting up husky pre-commit hook
 - `uninstall-husky` - script for removing husky from repository
