@@ -17,10 +17,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # Node 20 is too old for the test toolchain: jsdom 30 wants
+      # ^22.22.2 || ^24.15.0 || >=26, and the undici it pulls in wants >=22.19.
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
           cache: "npm"
 
       - name: Install dependencies
