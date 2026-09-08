@@ -246,7 +246,13 @@ With `animate: false`, results are placed with `jumpTo` rather than `flyTo`, and
 - `lint:scripts` - lint `.ts` files with eslint
 - `lint:styles` - lint `.css` and `.scss` files with stylelint
 - `format:scripts` - format `.ts`, `.html` and `.json` files with prettier
-- `format:styles` - format `.cs` and `.scss` files with stylelint
+- `format:styles` - format `.css` and `.scss` files with stylelint
 - `format` - format all with prettier and stylelint
+
+Formatting is split by file type: prettier owns scripts and markup, stylelint owns stylesheets. Prettier is configured
+(via `.prettierignore`) to skip `.css` and `.scss` entirely, because the two tools disagree about SCSS — notably on
+quote style, where prettier's preference fails stylelint's sass-guidelines preset and therefore CI. If you're changing
+stylesheet formatting, `stylelint --fix` is the tool to reach for.
+
 - `prepare` - script for setting up husky pre-commit hook
 - `uninstall-husky` - script for removing husky from repository

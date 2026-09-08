@@ -5,3 +5,11 @@ coverage
 dist
 node_modules
 vite.config.ts
+
+# Stylesheets are stylelint's to format (see `format:styles` and .lintstagedrc).
+# Both tools have opinions about SCSS and they disagree — most visibly on quote
+# style, where prettier rewrites `content: ' '` to double quotes and stylelint's
+# sass-guidelines preset then rejects it. Leaving styles to one owner keeps
+# `prettier . --write` from reformatting SCSS into a state that fails CI.
+*.css
+*.scss
