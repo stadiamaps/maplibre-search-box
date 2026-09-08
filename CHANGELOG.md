@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- New `animationOptions` option controls the camera transition when a result is selected. It takes MapLibre's own
+  `AnimationOptions`, so you can shorten the duration, supply an easing function, or set `animate: false` to move
+  instantly (via `jumpTo`) instead of flying across — handy if you need the map's final bounds right away, or want to
+  avoid loading the tiles along the flight path. Unset by default, so behavior is unchanged if you don't set it.
 - New `placeholder` and `noResults` options let you override the two strings the widget renders itself, so you can
   match your product voice or feed in translations from your application's own i18n system. Both default to the
   existing English text, so behavior is unchanged if you don't set them.
