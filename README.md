@@ -95,15 +95,17 @@ export class MapLibreSearchControlOptions {
   useMapFocusPoint = true;
   mapFocusPointMinZoom = 5;
   fixedFocusPoint: [number, number] = null;
-  searchOnEnter = false;
+  searchOnEnter = true;
   maxResults = 5;
   minInputLength = 3;
   minWaitPeriodMs = 100;
-  layers: GeocodingLayer[] = null;
-  onResultSelected?: (feature: GeocodingGeoJSONFeature) => void;
+  layers: LayerId[] = null;
+  onResultSelected?: (feature: FeaturePropertiesV2) => void;
   onResults?: (results: { query: string; features: FeaturePropertiesV2[] }) => void;
   baseUrl: string | null = null;
   lang: string | null = null;
+  placeholder: string | null = null;
+  noResults: string | null = null;
 }
 ```
 
@@ -172,6 +174,20 @@ set the `baseUrl` to `https://api-eu.stadiamaps.com`.
 
 An optional [BCP47](https://en.wikipedia.org/wiki/IETF_language_tag) language tag (e.g. `en`, `de`, `fr`) used to
 request results localized in that language. When unset, the API's default language behavior is used.
+
+Note that this localizes the search _results_ only. The widget's own text is English by default; supply your own
+translations via the `placeholder` and `noResults` options below.
+
+### `placeholder`
+
+An optional override for the search input's placeholder text. Use it to match your own product voice, or to pass in an
+already-translated string from your application's own i18n system — the widget renders whatever you give it and does
+not translate anything itself. Defaults to `"Search for places..."`.
+
+### `noResults`
+
+An optional override for the message shown when a search returns nothing. Same deal as `placeholder`. Defaults to
+`"No Results Found"`.
 
 ## Development
 
