@@ -96,12 +96,16 @@ export class MapLibreSearchControlOptions {
   mapFocusPointMinZoom = 5;
   fixedFocusPoint: [number, number] = null;
   searchOnEnter = true;
+  hideResultsOnBlur = false;
   maxResults = 5;
   minInputLength = 3;
   minWaitPeriodMs = 100;
   layers: LayerId[] = null;
   onResultSelected?: (feature: FeaturePropertiesV2) => void;
-  onResults?: (results: { query: string; features: FeaturePropertiesV2[] }) => void;
+  onResults?: (results: {
+    query: string;
+    features: FeaturePropertiesV2[];
+  }) => void;
   baseUrl: string | null = null;
   lang: string | null = null;
   placeholder: string | null = null;
@@ -132,6 +136,21 @@ rather than autocomplete search, once you know that the user has completed their
 The full forward geocoding endpoint is able to interpolate addresses,
 and may provide better results with complete input than the autocomplete
 endpoint. Opting in to this behavior will send a final forward geocoding request if the user presses enter.
+
+### `hideResultsOnBlur`
+
+If set, the results list is hidden whenever the search input loses focus (for example, when the user clicks the map or
+tabs away), and shown again when the input is refocused. The results aren't discarded, so refocusing brings back the
+same list without another API request. Selecting a result still works as usual: pressing one keeps focus on the input
+long enough for the selection to register.
+
+Defaults to `false`, which leaves the results visible until the user selects one or clears the input.
+
+```javascript
+new MapLibreSearchControl({
+  hideResultsOnBlur: true,
+});
+```
 
 ### `maxResults`
 

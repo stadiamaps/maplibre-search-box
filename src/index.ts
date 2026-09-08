@@ -32,6 +32,7 @@ export class MapLibreSearchControlOptions {
   mapFocusPointMinZoom = 5;
   fixedFocusPoint: [number, number] = null;
   searchOnEnter = true;
+  hideResultsOnBlur = false;
   maxResults = 5;
   minInputLength = 3;
   minWaitPeriodMs = 100;
@@ -121,6 +122,19 @@ export class MapLibreSearchControl implements IControl {
     attribution.className = "search-attribution";
     attribution.innerHTML = `<img height="50" width="50" src="${logo}" alt="Stadia Maps" class="logo"> Powered by <a href="https://stadiamaps.com/" target="_blank">Stadia Maps</a><br>&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="nofollow">OpenStreetMap</a> contributors &amp; <a href="https://stadiamaps.com/attribution/" target="_blank">others</a>`;
 
+    // Both halves of this behavior are opt-in: the mousedown guard below keeps
+    // text in the results selectable for everyone who doesn't ask to hide them.
+    if (this.options.hideResultsOnBlur) {
+      this.input.addEventListener("blur", this.onBlur.bind(this));
+      // A mousedown inside the results would otherwise move focus off the
+      // input, hiding the list before the click could land on a result.
+      // Nothing in there is focusable, so suppressing the default keeps focus
+      // on the input without swallowing the click (or the attribution links).
+      this.resultsContainer.addEventListener("mousedown", e =>
+        e.preventDefault()
+      );
+    }
+
     return container;
   }
 
@@ -135,6 +149,14 @@ export class MapLibreSearchControl implements IControl {
     }
 
     this.maybeShowClearButton();
+  }
+
+  // Only wired up when `hideResultsOnBlur` is set. The results themselves are
+  // kept, so refocusing the input brings the same list back (see `onFocus`)
+  // without another request.
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  onBlur(_e: Event) {
+    this.hideResults();
   }
 
   maybeShowClearButton() {

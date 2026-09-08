@@ -22,6 +22,19 @@ describe("search-control", () => {
     return clone;
   }
 
+  function place(name: string): FeaturePropertiesV2 {
+    return {
+      type: "Feature",
+      geometry: { type: "Point", coordinates: [-93.2650478, 44.9772995] },
+      properties: {
+        gid: `openstreetmap:poi:node/${name}`,
+        layer: "poi",
+        name,
+        precision: "point",
+      },
+    };
+  }
+
   it("exists", () => {
     const control = new MapLibreSearchControl({});
 
@@ -106,19 +119,6 @@ describe("search-control", () => {
   });
 
   describe("keyboard navigation", () => {
-    function place(name: string): FeaturePropertiesV2 {
-      return {
-        type: "Feature",
-        geometry: { type: "Point", coordinates: [-93.2650478, 44.9772995] },
-        properties: {
-          gid: `openstreetmap:poi:node/${name}`,
-          layer: "poi",
-          name,
-          precision: "point",
-        },
-      };
-    }
-
     // jsdom implements neither layout nor `scrollIntoView`, so the most we can
     // observe here is which result the control asks the browser to reveal;
     // that the browser then scrolls only as far as needed is `nearest`'s job.
@@ -206,6 +206,91 @@ describe("search-control", () => {
       control.clearResults();
 
       expect(list.scrollTop).toBe(0);
+    });
+  });
+
+  describe("hideResultsOnBlur", () => {
+    function control(options: Partial<MapLibreSearchControl["options"]> = {}): {
+      input: HTMLInputElement;
+      results: HTMLElement;
+    } {
+      const control = new MapLibreSearchControl(options);
+      const container = control.onAdd(fakeMap());
+      // jsdom only dispatches focus and blur for elements in the document.
+      document.body.replaceChildren(container);
+
+      const features = [place("Target Field"), place("Nicollet Mall")];
+      control["resultFeatures"] = features;
+      features.forEach(feature => control.addResult(feature));
+
+      return {
+        input: container.querySelector("input"),
+        results: container.querySelector<HTMLElement>(".results"),
+      };
+    }
+
+    function hidden(results: HTMLElement): boolean {
+      return results.classList.contains("hidden");
+    }
+
+    function mousedown(target: Element): boolean {
+      const event = new MouseEvent("mousedown", {
+        bubbles: true,
+        cancelable: true,
+      });
+      target.dispatchEvent(event);
+
+      return event.defaultPrevented;
+    }
+
+    it("defaults to off", () => {
+      expect(new MapLibreSearchControl({}).options.hideResultsOnBlur).toBe(
+        false
+      );
+    });
+
+    it("keeps the results visible on blur by default", () => {
+      const { input, results } = control();
+
+      input.focus();
+      input.blur();
+
+      expect(hidden(results)).toBe(false);
+    });
+
+    it("hides the results on blur when enabled", () => {
+      const { input, results } = control({ hideResultsOnBlur: true });
+
+      input.focus();
+      expect(hidden(results)).toBe(false);
+
+      input.blur();
+
+      expect(hidden(results)).toBe(true);
+    });
+
+    it("brings the same results back when the input is refocused", () => {
+      const { input, results } = control({ hideResultsOnBlur: true });
+
+      input.focus();
+      input.blur();
+      input.focus();
+
+      expect(hidden(results)).toBe(false);
+      expect(results.querySelectorAll(".result")).toHaveLength(2);
+    });
+
+    // Without this, the blur would hide the list out from under the click.
+    it("keeps focus on the input when a result is pressed", () => {
+      const { results } = control({ hideResultsOnBlur: true });
+
+      expect(mousedown(results.querySelector(".result"))).toBe(true);
+    });
+
+    it("leaves mousedown in the results alone when disabled", () => {
+      const { results } = control();
+
+      expect(mousedown(results.querySelector(".result"))).toBe(false);
     });
   });
 
