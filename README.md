@@ -95,12 +95,12 @@ export class MapLibreSearchControlOptions {
   useMapFocusPoint = true;
   mapFocusPointMinZoom = 5;
   fixedFocusPoint: [number, number] = null;
-  searchOnEnter = false;
+  searchOnEnter = true;
   maxResults = 5;
   minInputLength = 3;
   minWaitPeriodMs = 100;
-  layers: GeocodingLayer[] = null;
-  onResultSelected?: (feature: GeocodingGeoJSONFeature) => void;
+  layers: LayerId[] = null;
+  onResultSelected?: (feature: FeaturePropertiesV2) => void;
   onResults?: (results: { query: string; features: FeaturePropertiesV2[] }) => void;
   baseUrl: string | null = null;
   lang: string | null = null;
