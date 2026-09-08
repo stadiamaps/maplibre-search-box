@@ -57,4 +57,50 @@ describe("search-control", () => {
     expect(container.parentNode).toBeNull();
     expect(control.getContainer()).toBeNull();
   });
+
+  describe("text options", () => {
+    function noResultText(control: MapLibreSearchControl): string | undefined {
+      control.onAdd(fakeMap());
+      control.onNoResults();
+
+      return control.getContainer().querySelector(".no-result")?.textContent;
+    }
+
+    it("uses the default placeholder when none is provided", () => {
+      const control = new MapLibreSearchControl({});
+      const input = control.buildInput().querySelector("input");
+
+      expect(input?.placeholder).toBe("Search for places...");
+    });
+
+    it("uses the configured placeholder when provided", () => {
+      const control = new MapLibreSearchControl({
+        placeholder: "Suche nach Orten...",
+      });
+      const input = control.buildInput().querySelector("input");
+
+      expect(input?.placeholder).toBe("Suche nach Orten...");
+    });
+
+    it("uses the default no-results message when none is provided", () => {
+      expect(noResultText(new MapLibreSearchControl({}))).toBe(
+        "No Results Found"
+      );
+    });
+
+    it("uses the configured no-results message when provided", () => {
+      const control = new MapLibreSearchControl({
+        noResults: "Keine Ergebnisse gefunden",
+      });
+
+      expect(noResultText(control)).toBe("Keine Ergebnisse gefunden");
+    });
+
+    it("defaults both text options to null", () => {
+      const control = new MapLibreSearchControl({});
+
+      expect(control.options.placeholder).toBeNull();
+      expect(control.options.noResults).toBeNull();
+    });
+  });
 });

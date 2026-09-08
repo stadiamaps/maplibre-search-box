@@ -1,5 +1,11 @@
 # Change Log
 
+## Unreleased
+
+- New `placeholder` and `noResults` options let you override the two strings the widget renders itself, so you can
+  match your product voice or feed in translations from your application's own i18n system. Both default to the
+  existing English text, so behavior is unchanged if you don't set them.
+
 ## v3.1.1
 
 Fixes an issue where a scrollbar was always visible in the search results list,

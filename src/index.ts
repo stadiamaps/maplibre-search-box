@@ -43,6 +43,8 @@ export class MapLibreSearchControlOptions {
   }) => void;
   baseUrl: string | null = null;
   lang: string | null = null;
+  placeholder: string | null = null;
+  noResults: string | null = null;
 }
 
 export class MapLibreSearchControl implements IControl {
@@ -97,7 +99,7 @@ export class MapLibreSearchControl implements IControl {
 
     this.input = inputContainer.appendChild(document.createElement("input"));
     this.input.type = "text";
-    this.input.placeholder = "Search for places...";
+    this.input.placeholder = this.options.placeholder ?? "Search for places...";
     this.input.addEventListener("input", this.onInput.bind(this));
     this.input.addEventListener("focus", this.onFocus.bind(this));
     this.input.addEventListener("keydown", this.onKey.bind(this));
@@ -304,7 +306,7 @@ export class MapLibreSearchControl implements IControl {
 
     const el = document.createElement("div");
     el.className = "result no-result";
-    el.textContent = "No Results Found";
+    el.textContent = this.options.noResults ?? "No Results Found";
 
     this.resultsList.appendChild(el);
   }
