@@ -190,6 +190,11 @@ export class MapLibreSearchControl implements IControl {
       if (index === this.selectedResultIndex) {
         result.classList.add("hover");
         this.input.value = this.resultFeatures[index].properties.name;
+        // Keeps the keyboard selection visible once the list overflows;
+        // `nearest` scrolls by the smallest amount that reveals the result.
+        // Called optionally because jsdom, which applications embedding the
+        // control commonly test against, doesn't implement it.
+        result.scrollIntoView?.({ block: "nearest" });
       } else {
         result.classList.remove("hover");
       }
@@ -497,6 +502,9 @@ export class MapLibreSearchControl implements IControl {
   clearResults() {
     this.resultFeatures = [];
     this.resultsList.replaceChildren("");
+    // A fresh set of results should start at the top, even if the previous one
+    // was long enough that the user had scrolled down through it.
+    this.resultsList.scrollTop = 0;
     this.selectedResultIndex = null;
     this.originalInput = "";
   }
