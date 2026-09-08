@@ -3,25 +3,22 @@ import { MapLibreSearchControl } from "../src";
 import { IControl, Map } from "maplibre-gl";
 
 describe("search-control", () => {
-  function setupMap() {
-    const mapEl = document.createElement("div");
-    mapEl.id = "map";
-    document.body.appendChild(mapEl);
+  // maplibre-gl's Map constructor requires a real WebGL2 context, which jsdom
+  // cannot provide, so we stand in the only part of the map `onAdd` touches.
+  // What we actually want to assert on is the markup the control itself builds.
+  function fakeMap(): Map {
+    return { _container: document.createElement("div") } as unknown as Map;
+  }
 
-    const control = new MapLibreSearchControl({});
-    const map = new Map({
-      container: "map",
-      style: "https://tiles.stadiamaps.com/styles/alidade_smooth.json",
-      center: [-74.5, 40],
-      zoom: 2,
-    });
-    map.addControl(control);
+  // The bundler inlines our SVG assets as data URIs, which would otherwise dump
+  // kilobytes of encoded markup into the snapshot and churn on every re-encode.
+  function withoutInlinedAssets(el: HTMLElement): HTMLElement {
+    const clone = el.cloneNode(true) as HTMLElement;
+    clone
+      .querySelectorAll<HTMLImageElement>('img[src^="data:"]')
+      .forEach(img => img.setAttribute("src", "data:<inlined>"));
 
-    return {
-      mapEl,
-      map,
-      control,
-    };
+    return clone;
   }
 
   it("exists", () => {
@@ -43,8 +40,21 @@ describe("search-control", () => {
     expect(control.options.lang).toBe("fr");
   });
 
-  it.todo("can be added to map", () => {
-    const { mapEl } = setupMap();
-    expect(mapEl).toMatchSnapshot();
+  it("can be added to map", () => {
+    const control = new MapLibreSearchControl({});
+
+    expect(withoutInlinedAssets(control.onAdd(fakeMap()))).toMatchSnapshot();
+  });
+
+  it("removes its container from the map", () => {
+    const control = new MapLibreSearchControl({});
+    const map = fakeMap();
+    const container = control.onAdd(map);
+    document.body.appendChild(container);
+
+    control.onRemove(map);
+
+    expect(container.parentNode).toBeNull();
+    expect(control.getContainer()).toBeNull();
   });
 });
