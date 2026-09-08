@@ -38,6 +38,7 @@ export class MapLibreSearchControlOptions {
   layers: LayerId[] = null;
   onResultSelected?: (feature: FeaturePropertiesV2) => void;
   baseUrl: string | null = null;
+  lang: string | null = null;
 }
 
 export class MapLibreSearchControl implements IControl {
@@ -213,6 +214,10 @@ export class MapLibreSearchControl implements IControl {
 
           if (this.options.layers) {
             params.layers = this.options.layers;
+          }
+
+          if (this.options.lang) {
+            params.lang = this.options.lang;
           }
 
           let focusPoint = this.options.fixedFocusPoint;

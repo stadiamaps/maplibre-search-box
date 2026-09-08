@@ -31,6 +31,18 @@ describe("search-control", () => {
     expectTypeOf(control).toMatchTypeOf<IControl>();
   });
 
+  it("defaults lang to null", () => {
+    const control = new MapLibreSearchControl({});
+
+    expect(control.options.lang).toBeNull();
+  });
+
+  it("accepts a lang option", () => {
+    const control = new MapLibreSearchControl({ lang: "fr" });
+
+    expect(control.options.lang).toBe("fr");
+  });
+
   it.todo("can be added to map", () => {
     const { mapEl } = setupMap();
     expect(mapEl).toMatchSnapshot();
