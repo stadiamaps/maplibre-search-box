@@ -1,4 +1,4 @@
-import type { IControl, Map } from "maplibre-gl";
+import type { AnimationOptions, IControl, Map } from "maplibre-gl";
 import {
   type AutocompleteV2Request,
   Configuration,
@@ -45,6 +45,7 @@ export class MapLibreSearchControlOptions {
   lang: string | null = null;
   placeholder: string | null = null;
   noResults: string | null = null;
+  animationOptions: AnimationOptions | null = null;
 }
 
 export class MapLibreSearchControl implements IControl {
@@ -311,6 +312,10 @@ export class MapLibreSearchControl implements IControl {
     this.resultsList.appendChild(el);
   }
 
+  private animationOptions(): AnimationOptions {
+    return this.options.animationOptions ?? {};
+  }
+
   async onSelected(feature: FeaturePropertiesV2) {
     if (!hasGeometry(feature)) {
       // We need to get the full details if there isn't a geometry
@@ -322,10 +327,17 @@ export class MapLibreSearchControl implements IControl {
       }
       await this.onSelected(detail.features[0]);
     } else if (feature.bbox !== undefined) {
-      this.map.fitBounds([
-        [feature.bbox[0], feature.bbox[1]],
-        [feature.bbox[2], feature.bbox[3]],
-      ]);
+      const animation = this.animationOptions();
+      this.map.fitBounds(
+        [
+          [feature.bbox[0], feature.bbox[1]],
+          [feature.bbox[2], feature.bbox[3]],
+        ],
+        // `fitBounds` delegates to `flyTo` unless `linear` is set, and `flyTo`
+        // ignores `animate`; only the `easeTo` path honors it (by zeroing the
+        // duration), so opting out of animation means opting into `linear`.
+        animation.animate === false ? { ...animation, linear: true } : animation
+      );
     } else {
       let zoomTarget;
       switch (feature.properties.layer) {
@@ -368,13 +380,22 @@ export class MapLibreSearchControl implements IControl {
         default:
           zoomTarget = 10;
       }
-      this.map.flyTo({
+      const animation = this.animationOptions();
+      const camera = {
         center: [
           feature.geometry.coordinates[0],
           feature.geometry.coordinates[1],
-        ],
+        ] as [number, number],
         zoom: zoomTarget,
-      });
+      };
+      if (animation.animate === false) {
+        // `flyTo` only skips its animation for `prefers-reduced-motion`, so we
+        // jump straight to the target rather than flying through (and loading)
+        // every tile along the way.
+        this.map.jumpTo(camera);
+      } else {
+        this.map.flyTo({ ...camera, ...animation });
+      }
     }
 
     this.hideResults();

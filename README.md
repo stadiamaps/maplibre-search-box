@@ -106,6 +106,7 @@ export class MapLibreSearchControlOptions {
   lang: string | null = null;
   placeholder: string | null = null;
   noResults: string | null = null;
+  animationOptions: AnimationOptions | null = null;
 }
 ```
 
@@ -188,6 +189,34 @@ not translate anything itself. Defaults to `"Search for places..."`.
 
 An optional override for the message shown when a search returns nothing. Same deal as `placeholder`. Defaults to
 `"No Results Found"`.
+
+### `animationOptions`
+
+Controls how the map camera moves when a result is selected. This is MapLibre's own
+[`AnimationOptions`](https://maplibre.org/maplibre-gl-js/docs/API/type-aliases/AnimationOptions/) and is passed
+through to the underlying camera call, so you can shorten the transition, supply your own easing function, or skip
+the animation entirely. When unset, MapLibre's defaults apply (a `flyTo`, or a `fitBounds` for results with a
+bounding box).
+
+To move the camera faster without giving up the animation:
+
+```javascript
+new MapLibreSearchControl({
+  animationOptions: { duration: 300 },
+});
+```
+
+To move instantly, which is worth doing if you depend on the map's final bounds right away, or want to avoid loading
+all the tiles the camera passes over:
+
+```javascript
+new MapLibreSearchControl({
+  animationOptions: { animate: false },
+});
+```
+
+With `animate: false`, results are placed with `jumpTo` rather than `flyTo`, and results with a bounding box use
+`fitBounds`'s linear (instant) path.
 
 ## Development
 
