@@ -120,7 +120,10 @@ export class MapLibreSearchControl implements IControl {
       document.createElement("div")
     );
     attribution.className = "search-attribution";
-    attribution.innerHTML = `<img height="50" width="50" src="${logo}" alt="Stadia Maps" class="logo"> Powered by <a href="https://stadiamaps.com/" target="_blank">Stadia Maps</a><br>&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="nofollow">OpenStreetMap</a> contributors &amp; <a href="https://stadiamaps.com/attribution/" target="_blank">others</a>`;
+    // https://docs.stadiamaps.com/attribution/ asks for a credit to Stadia Maps
+    // and to the original data sources; the Stadia Maps link points at the
+    // attribution page, which is where the full source list lives.
+    attribution.innerHTML = `<img height="50" width="50" src="${logo}" alt="Stadia Maps" class="logo"> Powered by <a href="https://stadiamaps.com/attribution/" target="_blank">Stadia Maps</a><br>&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="nofollow">OpenStreetMap</a> contributors &amp; other data sources`;
 
     // Both halves of this behavior are opt-in: the mousedown guard below keeps
     // text in the results selectable for everyone who doesn't ask to hide them.

@@ -36,7 +36,7 @@ exports[`search-control > can be added to map 1`] = `
       />
        Powered by 
       <a
-        href="https://stadiamaps.com/"
+        href="https://stadiamaps.com/attribution/"
         target="_blank"
       >
         Stadia Maps
@@ -50,13 +50,7 @@ exports[`search-control > can be added to map 1`] = `
       >
         OpenStreetMap
       </a>
-       contributors & 
-      <a
-        href="https://stadiamaps.com/attribution/"
-        target="_blank"
-      >
-        others
-      </a>
+       contributors & other data sources
     </div>
   </div>
 </div>

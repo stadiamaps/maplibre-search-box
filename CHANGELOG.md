@@ -2,6 +2,10 @@
 
 ## v3.2.0
 
+- The attribution under the results now follows our current
+  [attribution requirements](https://docs.stadiamaps.com/attribution/) for geocoding: the Stadia Maps credit links to
+  the attribution page (where the full list of data sources lives), and the second line credits OpenStreetMap
+  contributors and other data sources rather than singling out OpenStreetMap with a vague "others."
 - Keyboard navigation now scrolls the results list so the highlighted result stays visible. Arrowing past the bottom
   (or back above the top) of a list long enough to overflow used to move the highlight out of sight; the list now
   scrolls by just enough to keep the selection in view.
